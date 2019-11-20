@@ -10,6 +10,7 @@ namespace LGP.EE {
     public class GameEventPage : MonoBehaviour {
         #region Variables
         public string displayName;
+        public int order;
         #endregion
 
         #region UnityMethods

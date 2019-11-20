@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEditor;
+using UnityEditorInternal;
 
 namespace LGP.EE {
     /// <summary>
@@ -16,7 +18,7 @@ namespace LGP.EE {
         public string id;
         public string displayName;
         public GameEventPage activeEventPage;
-        [SerializeField] private List<GameEventPage> eventPages = new List<GameEventPage>();
+        [SerializeField] public List<GameEventPage> eventPages = new List<GameEventPage>();
         private UnityEvent functions = new UnityEvent();
 
         #endregion
@@ -27,12 +29,27 @@ namespace LGP.EE {
 
         #region Method
         public void Refresh() {
-            eventPages = new List<GameEventPage>(GetComponents<GameEventPage>());
+            int index = 0;
+            List<GameEventPage> list = new List<GameEventPage>(GetComponents<GameEventPage>());
+            list.Sort((a, b) => a.order.CompareTo(b.order));
+            eventPages = list;
+            for (int i = 0; i < eventPages.Count; i++) {
+                eventPages[i].order = index++;
+            }
+        }
+
+        public void SortPages() {
+            // Make a sorted list
+            int index = 0;
+            for (int i = 0; i < eventPages.Count; i++) {
+                eventPages[i].order = index++;
+            }
         }
 
         public GameEventPage AddNewEventPage() {
             GameEventPage page = Undo.AddComponent<GameEventPage>(gameObject);
             page.displayName = "Page" + (eventPages.Count + 1);
+            page.order = eventPages.Count() - 1;
             Refresh();
             SetActivePage(eventPages.Count - 1);
             return page;
@@ -40,15 +57,14 @@ namespace LGP.EE {
 
         public void RemoveEventPage(int index) {
             GameEventPage eventPage = eventPages[index];
-            if (activeEventPage.Equals(eventPage)) {
-                if (eventPages.Count > 0) {
-                    activeEventPage = eventPages[0];
-                } else {
-                    activeEventPage = null;
-                }
-            }
             Undo.DestroyObjectImmediate(eventPage);
             Refresh();
+            if (eventPages.Count != 0) {
+                activeEventPage = eventPages[0];
+            } else {
+                activeEventPage = null;
+            }
+            
         }
 
         public void SetActivePage(int index) {

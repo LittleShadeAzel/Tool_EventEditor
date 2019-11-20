@@ -94,7 +94,8 @@ namespace LGP.EE {
 
             // Reorder elements
             reordList.onReorderCallback = (ReorderableList list) => {
-                
+                gameEvent.SortPages();
+                Repaint();
             };
 
             return reordList;
