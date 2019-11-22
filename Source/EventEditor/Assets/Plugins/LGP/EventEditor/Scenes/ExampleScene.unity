@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -294,6 +294,23 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1048938846
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb47dbc39e14a6940b60117a18e1f57c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameObjectA: {fileID: 1293064802}
+  gameObjectB: {fileID: 0}
+  indexA: 0
+  indexB: 0
+  conditionIndex: 0
 --- !u!1 &1293064802
 GameObject:
   m_ObjectHideFlags: 0
@@ -303,9 +320,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1293064804}
+  - component: {fileID: 1293064803}
   - component: {fileID: 1293064807}
   - component: {fileID: 1293064805}
-  - component: {fileID: 1293064803}
   m_Layer: 0
   m_Name: Testobject
   m_TagString: Untagged
@@ -322,11 +339,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 1293064802}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e06865e045b19784f84d238373967dd5, type: 3}
+  m_Script: {fileID: 11500000, guid: c5f86b3a1b49a28438c2a38996605345, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: Page2
-  order: 1
+  publicBool: 1
+  conditionalPublicBool: 1
+  publicInt: 1
+  conditionalPublicInt: 1
+  publicFloat: 1
+  conditionalPublicFloat: 1
+  publicString: Test
+  conditionalPublicString: Test
 --- !u!4 &1293064804
 Transform:
   m_ObjectHideFlags: 0
@@ -355,6 +378,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   displayName: Page1
   order: 0
+  conditions:
+  - {fileID: 1048938846}
 --- !u!114 &1293064807
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -369,34 +394,50 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   id: 
   displayName: 
-  activeEventPage: {fileID: 1293064805}
+  activeEventPage: {fileID: 0}
+  selectedEventPageIndex: 0
   eventPages:
   - {fileID: 1293064805}
-  - {fileID: 1293064803}
---- !u!1 &1405681171
+--- !u!1 &1330511509
 GameObject:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1405681173}
-  - component: {fileID: 1405681172}
+  - component: {fileID: 1330511512}
+  - component: {fileID: 1330511511}
+  - component: {fileID: 1330511510}
   m_Layer: 0
-  m_Name: New Tilemap (1)
+  m_Name: Brush
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1405681172
+--- !u!114 &1330511510
 MonoBehaviour:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1405681171}
+  m_GameObject: {fileID: 1330511509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 860611cc84144924c8a95e2a1670d236, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Offset: {x: 0, y: 0}
+  IsUndoEnabled: 1
+  m_brushTilemap: {fileID: 1330511511}
+--- !u!114 &1330511511
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1330511509}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4dec3ca0fe88506448df84e8bf55b2dc, type: 3}
@@ -415,9 +456,9 @@ MonoBehaviour:
   m_sortingLayerName: Default
   m_orderInLayer: 0
   m_material: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
-  m_tintColor: {r: 1, g: 1, b: 1, a: 1}
+  m_tintColor: {r: 0.7, g: 0.7, b: 0.7, a: 0.7}
   m_pixelSnap: 0
-  m_isVisible: 1
+  m_isVisible: 0
   m_allowPaintingOutOfBounds: 1
   m_autoShrink: 0
   m_enableUndoWhilePainting: 1
@@ -426,14 +467,14 @@ MonoBehaviour:
   m_physicMaterial2D: {fileID: 0}
   m_cellSize: {x: 1, y: 1}
   m_mapBounds:
-    m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0, y: 0, z: 0}
+    m_Center: {x: 0.5, y: 0.5, z: 0}
+    m_Extent: {x: 0.5, y: 0.5, z: 0}
   m_tileset: {fileID: 11400000, guid: a116add085206bc40a117f02a7f5c1e8, type: 2}
   m_minGridX: 0
   m_minGridY: 0
   m_maxGridX: 0
   m_maxGridY: 0
-  m_parentTilemapGroup: {fileID: 1476163716}
+  m_parentTilemapGroup: {fileID: 0}
   m_parallaxFactor: {x: 1, y: 1}
   m_chunkRendererProperties:
     castShadows: 0
@@ -441,71 +482,17 @@ MonoBehaviour:
     useLightProbes: 0
     reflectionProbeUsage: 0
     anchorOverride: {fileID: 0}
---- !u!4 &1405681173
+--- !u!4 &1330511512
 Transform:
-  m_ObjectHideFlags: 0
+  m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1405681171}
+  m_GameObject: {fileID: 1330511509}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 4, y: 0, z: -0.01}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1476163717}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1476163715
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1476163717}
-  - component: {fileID: 1476163716}
-  m_Layer: 0
-  m_Name: TilemapGroup
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1476163716
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1476163715}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7823ea85fd63d7f4d8b988fd3963dd85, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_tilemaps:
-  - {fileID: 1405681172}
-  m_selectedIndex: 0
-  m_unselectedColorMultiplier: 1
-  m_defaultTilemapWindowVisible: 0
-  m_displayTilemapRList: 1
-  m_savedTileIds: 
-  m_savedTileDefaultTilemaps: []
-  m_savedBrushIds: 
-  m_savedBrushDefaultTilemaps: []
---- !u!4 &1476163717
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1476163715}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 1405681173}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

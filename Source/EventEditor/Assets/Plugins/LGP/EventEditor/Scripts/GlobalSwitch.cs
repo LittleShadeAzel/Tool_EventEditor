@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace LGP.EE {
+namespace LGP.EventEditor {
     /// <summary>
     /// A global manifest of switches, which can be defined by the user and game.
     /// </summary>
