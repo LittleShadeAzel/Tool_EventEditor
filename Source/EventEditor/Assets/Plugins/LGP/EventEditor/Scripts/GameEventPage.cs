@@ -9,7 +9,7 @@ namespace LGP.EventEditor {
     /// <summary>
     /// A page represents one "state" an event can be. Pages have their own conditions, setups, trigger and functions.
     /// </summary>
-    public class GameEventPage : MonoBehaviour {
+    public class GameEventPage : ScriptableObject {
         #region Variables
         public string displayName;
         public int order;

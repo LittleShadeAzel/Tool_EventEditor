@@ -21,8 +21,6 @@ namespace LGP.EventEditor {
         [SerializeField] private int selectedEventPageIndex = -1;
         public GameEventPage SelectedEventPage { get => selectedEventPageIndex >= 0 && selectedEventPageIndex < eventPages.Count ? eventPages[selectedEventPageIndex] : null; }
         [SerializeField] public List<GameEventPage> eventPages = new List<GameEventPage>();
-        private UnityEvent functions = new UnityEvent();
-
         #endregion
 
         #region Unity Methods 
@@ -32,9 +30,9 @@ namespace LGP.EventEditor {
         #region Method
         public void Refresh() {
             int index = 0;
-            List<GameEventPage> list = new List<GameEventPage>(GetComponents<GameEventPage>());
-            list.Sort((a, b) => a.order.CompareTo(b.order));
-            eventPages = list;
+            //List<GameEventPage> list = new List<GameEventPage>(GetComponents<GameEventPage>());
+            //list.Sort((a, b) => a.order.CompareTo(b.order));
+            //eventPages = list;
             for (int i = 0; i < eventPages.Count; i++) {
                 SerializedObject page = new SerializedObject(eventPages[i]);
                 page.FindProperty("order").intValue = index++;
@@ -55,7 +53,7 @@ namespace LGP.EventEditor {
         }
 
         public GameEventPage AddNewEventPage() {
-            GameEventPage page = Undo.AddComponent<GameEventPage>(gameObject);
+            GameEventPage page = ScriptableObject.CreateInstance<GameEventPage>();
             SerializedObject serializedPage = new SerializedObject(page);
 
             serializedPage.FindProperty("order").intValue = eventPages.Count - 1;

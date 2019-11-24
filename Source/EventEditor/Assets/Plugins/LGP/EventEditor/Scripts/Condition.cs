@@ -12,7 +12,7 @@ namespace LGP.EventEditor {
     public class Condition : ScriptableObject {
 
         #region Condition Checks
-        public static dynamic GetObjectType(dynamic dynamicObject) {
+        public static dynamic GetObjectInfoType(dynamic dynamicObject) {
             if (dynamicObject is FieldInfo) return (dynamicObject as FieldInfo).FieldType;
             if (dynamicObject is PropertyInfo) return (dynamicObject as PropertyInfo).PropertyType;
             if (dynamicObject is MethodInfo) return (dynamicObject as MethodInfo).ReturnType;
@@ -81,7 +81,7 @@ namespace LGP.EventEditor {
                     return a >= b;
                 case ENummeralCondition.LesserThan:
                     return a < b;
-                case ENummeralCondition.LesserOrEavenThan:
+                case ENummeralCondition.LesserOrEvenThan:
                     return a <= b;
                 default:
                     return false;
@@ -213,14 +213,24 @@ namespace LGP.EventEditor {
         #endregion
 
         #region Variables
-        [SerializeField]
         public GameObject gameObjectA, gameObjectB;
-        public int indexA, indexB, conditionIndex;
+        private int indexA, indexB, conditionIndex = -1;
+        public int IndexA { get => indexA == -1 ? 0 : indexA; set => indexA = value; }
+        public int IndexB { get => indexB == -1 ? 0 : indexB; set => indexB = value; }
+        public int ConditionIndex { get => conditionIndex == -1 ? 0 : conditionIndex; set => conditionIndex = value; }
         public dynamic objectA, objectB;
+
+        public bool ConditionViable { get => (objectA != null && objectB != null && conditionIndex >= 0); }
         #endregion
 
         #region Methods
-        
+        public void ClearCondition() {
+            indexA = -1;
+            indexB = -1;
+            conditionIndex = -1;
+            objectA = null;
+            objectB = null;
+        }
         #endregion
     }
 
