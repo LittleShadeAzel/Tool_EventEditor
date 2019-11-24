@@ -11,18 +11,18 @@ namespace LGP.EventEditor {
     public class GameEventEditor : Editor {
         #region Variables
         private GameEvent gameEvent;
-        public SerializedProperty selectedEventPageIndex;
-        private GameEventPageEditor pageEditor;
+        public SerializedProperty selectedPageIndex;
+        private EEPageEditor pageEditor = null;
         private ReorderableList reordlistEventPages;
         #endregion
 
         #region Unity Methods
         private void OnEnable() {
             gameEvent = (GameEvent)target;
-            gameEvent.Refresh();
+            gameEvent.RefreshPages();
             serializedObject.Update();
-            selectedEventPageIndex = serializedObject.FindProperty("selectedEventPageIndex");
-            reordlistEventPages = EEUtils.CreateReordableList(serializedObject, serializedObject.FindProperty("eventPages"), MakeReordWrapper());
+            selectedPageIndex = serializedObject.FindProperty("selectedPageIndex");
+            reordlistEventPages = EEUtils.CreateReordableList(serializedObject, serializedObject.FindProperty("pages"), MakeReordWrapper());
         }
 
         private void OnDisable() {
@@ -30,7 +30,7 @@ namespace LGP.EventEditor {
         }
 
         public override void OnInspectorGUI() {
-            gameEvent.Refresh();
+            gameEvent.RefreshPages();
             serializedObject.Update();
             DrawInspector();
             serializedObject.ApplyModifiedProperties();
@@ -48,84 +48,78 @@ namespace LGP.EventEditor {
             gameEvent.displayName = EditorGUILayout.TextField("Name:", string.Empty, EditorStyles.textField);
             EditorGUILayout.EndVertical();
             reordlistEventPages.DoLayoutList();
-            GameEventPageEditor pageEditor = GetPageEditor();
+            EEPageEditor pageEditor = GetPageEditor();
             if (pageEditor) {
                 pageEditor.DrawInspectorGUI();
+            } else {
+                EditorGUILayout.HelpBox("Create or select a page.", MessageType.Info);
             }
         }
-        
 
-        private GameEventPageEditor GetPageEditor() {
-            GameEvent gameEvent = (GameEvent)target;
-            if (!pageEditor || !pageEditor.target || pageEditor.target != gameEvent.SelectedEventPage) {
-                if (gameEvent.SelectedEventPage) {
-                    if (pageEditor) DestroyImmediate(pageEditor);
-                    pageEditor = (GameEventPageEditor)CreateEditor(gameEvent.SelectedEventPage);
-                    pageEditor.SetEventEditor(this);
-                }
+        private EEPageEditor GetPageEditor() {
+            if (gameEvent.SelectedEventPage != null) {
+                return (EEPageEditor)CreateEditor(gameEvent.SelectedEventPage);
             } else {
-                //if (pageEditor) DestroyImmediate(pageEditor);
-                //pageEditor = null;
+                return null;
             }
-            return pageEditor;
         }
 
         private ReordableCallbackWrapper MakeReordWrapper() {
-            ReordableCallbackWrapper wrapper = new ReordableCallbackWrapper();
+            ReordableCallbackWrapper wrapper = new ReordableCallbackWrapper {
 
-            // Draw Header
-            wrapper.header = (Rect rect) => {
-                EditorGUI.LabelField(rect, "Pages", EditorStyles.boldLabel);
-            };
+                // Draw Header
+                header = (Rect rect) => {
+                    EditorGUI.LabelField(rect, "Pages", EditorStyles.boldLabel);
+                },
 
-            // Draw elements
-            wrapper.element = (Rect rect, int index, bool isActive, bool isFocused) => {
-                var element = serializedObject.FindProperty("eventPages").GetArrayElementAtIndex(index);
-                GameEventPage page = (GameEventPage)element.objectReferenceValue;
-                if (page) {
-                    SerializedObject serializedEventPage = new SerializedObject(page);
+                // Draw elements
+                element = (Rect rect, int index, bool isActive, bool isFocused) => {
+                    var element = serializedObject.FindProperty("pages").GetArrayElementAtIndex(index);
+                    EEPage page = (EEPage)element.objectReferenceValue;
+                    if (page) {
+                        SerializedObject serializedEventPage = new SerializedObject(page);
 
-                    EditorGUI.PropertyField(rect, serializedEventPage.FindProperty("displayName"), GUIContent.none);
+                        EditorGUI.PropertyField(rect, serializedEventPage.FindProperty("displayName"), GUIContent.none);
 
-                    if (GUI.changed) {
-                        serializedEventPage.ApplyModifiedProperties();
+                        if (GUI.changed) {
+                            serializedEventPage.ApplyModifiedProperties();
+                        }
                     }
+                },
+
+                // Add new element
+                add = (ReorderableList list) => {
+                    gameEvent.AddNewEventPage();
+                    serializedObject.Update();
+                    selectedPageIndex.intValue = gameEvent.pages.Count - 1;
+                    list.index = gameEvent.pages.Count - 1;
+                    serializedObject.ApplyModifiedProperties();
+                },
+
+                // Remove element
+                remove = (ReorderableList list) => {
+                    int newIndex = list.index;
+                    gameEvent.RemoveEventPage(list.index);
+                    serializedObject.Update();
+                    if (list.index == gameEvent.pages.Count) newIndex = gameEvent.pages.Count - 1;
+
+                    selectedPageIndex.intValue = newIndex;
+                    list.index = newIndex;
+
+                    serializedObject.ApplyModifiedProperties();
+                },
+
+                // Select element
+                select = (ReorderableList list) => {
+                    selectedPageIndex.intValue = list.index;
+                    serializedObject.ApplyModifiedProperties();
+                },
+
+                // Reorder elements
+                reorder = (ReorderableList list) => {
+                    gameEvent.RefreshPages();
                 }
             };
-
-            // Add new element
-            wrapper.add = (ReorderableList list) => {
-                gameEvent.AddNewEventPage();
-                selectedEventPageIndex.intValue = gameEvent.eventPages.Count - 1;
-                serializedObject.ApplyModifiedProperties();
-            };
-
-            // Remove element
-            wrapper.remove = (ReorderableList list) => {
-                GameEvent gameEvent = (GameEvent)target;
-                DestroyImmediate(pageEditor);
-                gameEvent.RemoveEventPage(list.index);
-                if (gameEvent.eventPages.Count != 0) {
-                    selectedEventPageIndex.intValue = 0;
-                } else {
-                    selectedEventPageIndex.intValue = -1;
-                }
-                serializedObject.ApplyModifiedProperties();
-            };
-
-            // Select element
-            wrapper.select = (ReorderableList list) => {
-                selectedEventPageIndex.intValue = list.index;
-                serializedObject.ApplyModifiedProperties();
-                GUI.changed = true;
-            };
-
-            // Reorder elements
-            wrapper.reorder = (ReorderableList list) => {
-                gameEvent.SortPages();
-                Repaint();
-            };
-
             return wrapper;
         }
         #endregion

@@ -9,7 +9,7 @@ namespace LGP.EventEditor {
     /// <summary>
     /// A page represents one "state" an event can be. Pages have their own conditions, setups, trigger and functions.
     /// </summary>
-    public class GameEventPage : ScriptableObject {
+    public class EEPage : ScriptableObject {
         #region Variables
         public string displayName;
         public int order;
@@ -21,7 +21,7 @@ namespace LGP.EventEditor {
 
         #region Methods
         public Condition AddCondition() {
-            Condition condition = ScriptableObject.CreateInstance<Condition>();
+            Condition condition = CreateInstance<Condition>();
             conditions.Add(condition);
             return condition;
         }

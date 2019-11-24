@@ -17,10 +17,10 @@ namespace LGP.EventEditor {
         #region Variables
         public string id;
         public string displayName;
-        public GameEventPage activeEventPage;
-        [SerializeField] private int selectedEventPageIndex = -1;
-        public GameEventPage SelectedEventPage { get => selectedEventPageIndex >= 0 && selectedEventPageIndex < eventPages.Count ? eventPages[selectedEventPageIndex] : null; }
-        [SerializeField] public List<GameEventPage> eventPages = new List<GameEventPage>();
+        public EEPage activeEventPage;
+        [SerializeField] private int selectedPageIndex = -1;
+        public EEPage SelectedEventPage { get => selectedPageIndex >= 0 && selectedPageIndex < pages.Count ? pages[selectedPageIndex] : null; }
+        [SerializeField] public List<EEPage> pages = new List<EEPage>();
         #endregion
 
         #region Unity Methods 
@@ -28,47 +28,39 @@ namespace LGP.EventEditor {
         #endregion
 
         #region Method
-        public void Refresh() {
+        public void RefreshPages() {
+            // Needed to remove empty nodes and get the sort right.
             int index = 0;
-            //List<GameEventPage> list = new List<GameEventPage>(GetComponents<GameEventPage>());
-            //list.Sort((a, b) => a.order.CompareTo(b.order));
-            //eventPages = list;
-            for (int i = 0; i < eventPages.Count; i++) {
-                SerializedObject page = new SerializedObject(eventPages[i]);
+            for (int i = 0; i < pages.Count; i++) {
+                if (pages[i] == null) {
+                    pages.RemoveAt(i);
+                    continue;
+                }
+                SerializedObject page = new SerializedObject(pages[i]);
                 page.FindProperty("order").intValue = index++;
                 page.ApplyModifiedProperties();
-                //eventPages[i].order = index++;
             }
         }
 
-        public void SortPages() {
-            // Make a sorted list
-            int index = 0;
-            for (int i = 0; i < eventPages.Count; i++) {
-                SerializedObject page = new SerializedObject(eventPages[i]);
-                page.FindProperty("order").intValue = index++;
-                page.ApplyModifiedProperties();
-                //eventPages[i].order = index++;
-            }
-        }
-
-        public GameEventPage AddNewEventPage() {
-            GameEventPage page = ScriptableObject.CreateInstance<GameEventPage>();
+        public EEPage AddNewEventPage() {
+            EEPage page = ScriptableObject.CreateInstance<EEPage>();
+            Undo.RegisterCreatedObjectUndo(page, "Created Page");
             SerializedObject serializedPage = new SerializedObject(page);
-
-            serializedPage.FindProperty("order").intValue = eventPages.Count - 1;
-            serializedPage.FindProperty("displayName").stringValue = "Page" + (eventPages.Count + 1);
+            serializedPage.FindProperty("order").intValue = pages.Count - 1;
+            serializedPage.FindProperty("displayName").stringValue = "Page" + (pages.Count + 1);        
             serializedPage.ApplyModifiedProperties();
+            pages.Add(page);
             //page.displayName = "Page" + (eventPages.Count + 1);
             //page.order = eventPages.Count - 1;
-            Refresh();
+            RefreshPages();
             return page;
         }
 
         public void RemoveEventPage(int index) {
-            GameEventPage eventPage = eventPages[index];
-            Undo.DestroyObjectImmediate(eventPage);
-            Refresh();
+            EEPage page = pages[index];
+            pages.RemoveAt(index);
+            Undo.DestroyObjectImmediate(page);
+            RefreshPages();
         }
         #endregion
     }
