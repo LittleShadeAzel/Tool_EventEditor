@@ -15,8 +15,7 @@ namespace LGP.EventEditor {
     /// </summary>
     public class GameEvent : MonoBehaviour {
         #region Variables
-        public string id;
-        public string displayName;
+        [SerializeField]public string displayName;
         public EEPage activeEventPage;
         [SerializeField] private int selectedPageIndex = -1;
         public EEPage SelectedEventPage { get => selectedPageIndex >= 0 && selectedPageIndex < pages.Count ? pages[selectedPageIndex] : null; }
@@ -24,7 +23,15 @@ namespace LGP.EventEditor {
         #endregion
 
         #region Unity Methods 
+        private void OnEnable() {
+            activeEventPage = GetActivePage();
+            if (activeEventPage != null)
+            Debug.Log(activeEventPage.displayName);
+        }
 
+        private void OnDisable() {
+            
+        }
         #endregion
 
         #region Method
@@ -61,6 +68,17 @@ namespace LGP.EventEditor {
             pages.RemoveAt(index);
             Undo.DestroyObjectImmediate(page);
             RefreshPages();
+        }
+
+        /// <summary>
+        /// Sets the active Page for this Event. The first page with its conditions beeing all true will be returend active.
+        /// </summary>
+        public EEPage GetActivePage() {
+            for (int i = 0; i < pages.Count; i++) {
+                EEPage page = pages[i];
+                if (page.CheckConditons()) return page;
+            }
+            return null;
         }
         #endregion
     }

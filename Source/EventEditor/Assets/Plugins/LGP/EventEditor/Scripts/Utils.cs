@@ -16,26 +16,6 @@ namespace LGP.Utils {
             if (!isDebugActive) return;
             UnityEngine.Debug.Log(content);
         }
-
-        public static ReorderableList CreateReordableList(SerializedObject serializedObject, SerializedProperty serializedElements, ReordableCallbackWrapper callback) {
-            ReorderableList reordList = new ReorderableList(serializedObject, serializedElements, true, true, true, true);
-            reordList.drawHeaderCallback = callback.header;
-            reordList.drawElementCallback = callback.element;
-            reordList.onReorderCallback = callback.reorder;
-            reordList.onSelectCallback = callback.select;
-            reordList.onAddCallback = callback.add;
-            reordList.onRemoveCallback = callback.remove;
-            return reordList;
-        }
-    }
-
-    public class ReordableCallbackWrapper {
-        public ReorderableList.HeaderCallbackDelegate header;
-        public ReorderableList.ElementCallbackDelegate element;
-        public ReorderableList.ReorderCallbackDelegate reorder;
-        public ReorderableList.SelectCallbackDelegate select;
-        public ReorderableList.AddCallbackDelegate add;
-        public ReorderableList.RemoveCallbackDelegate remove;
     }
 
     public static class IOUtils {

@@ -12,16 +12,16 @@ namespace LGP.EventEditor {
     public class Condition : ScriptableObject {
 
         #region Condition Checks
-        public static dynamic GetObjectInfoType(dynamic dynamicObject) {
+        public static Type GetObjectInfoType(dynamic dynamicObject) {
             if (dynamicObject is FieldInfo) return (dynamicObject as FieldInfo).FieldType;
             if (dynamicObject is PropertyInfo) return (dynamicObject as PropertyInfo).PropertyType;
             if (dynamicObject is MethodInfo) return (dynamicObject as MethodInfo).ReturnType;
             return null;
         }
 
-        public static EConditionType CheckCondition(object a) {
-            if (a is FieldInfo) {
-                FieldInfo field = (FieldInfo)a;
+
+        public static EConditionType GetConditionType(object a) {
+            if (a is FieldInfo field) {
                 if (field.FieldType == typeof(bool)) {
                     return EConditionType.Boolean;
                 } else if (field.FieldType == typeof(int)) {
@@ -31,8 +31,7 @@ namespace LGP.EventEditor {
                 } else {
                     return EConditionType.String;
                 }
-            } else if (a is PropertyInfo) {
-                PropertyInfo property = (PropertyInfo)a;
+            } else if (a is PropertyInfo property) {
                 if (property.PropertyType == typeof(bool)) {
                     return EConditionType.Boolean;
                 } else if (property.PropertyType == typeof(int)) {
@@ -56,43 +55,60 @@ namespace LGP.EventEditor {
             }
         }
 
-        public static bool CheckBool(bool a, bool b, EBoolConditionMode mode) {
+        public static bool CheckBool(bool a, bool b, int mode) {
             switch (mode) {
-                case EBoolConditionMode.Same:
+                case 0: // Same
                     return a == b;
-                case EBoolConditionMode.NotSame:
+                case 1: // NotSame
                     return a != b;
                 default:
                     return false;
             }
         }
 
-        public static bool CheckNummeral(dynamic number1, dynamic number2, ENummeralCondition mode) {
-            float a = (float)number1;
-            float b = (float)number2;
+        public static bool CheckFloat(float a, float b, int mode) {
             switch (mode) {
-                case ENummeralCondition.Equal:
+                case 0: // Equal
                     return a == b;
-                case ENummeralCondition.NotEqual:
-                    return a != b;;
-                case ENummeralCondition.GreaterThan:
+                case 1: // NotEqual
+                    return a != b; ;
+                case 2: // GreaterThan
                     return a > b;
-                case ENummeralCondition.GreaterOrEvenThan:
+                case 3: // GreaterOrEvenThan
                     return a >= b;
-                case ENummeralCondition.LesserThan:
+                case 4: // LesserThan
                     return a < b;
-                case ENummeralCondition.LesserOrEvenThan:
+                case 5: // LesserOrEvenThan
                     return a <= b;
                 default:
                     return false;
             }
         }
 
-        public static bool CheckString(string a, string b, EStringConditionMode mode) {
+        public static bool CheckInt(int a, int b, int mode) {
             switch (mode) {
-                case EStringConditionMode.Same:
+                case 0: // Equal
                     return a == b;
-                case EStringConditionMode.NotSame:
+                case 1: // NotEqual
+                    return a != b; ;
+                case 2: // GreaterThan
+                    return a > b;
+                case 3: // GreaterOrEvenThan
+                    return a >= b;
+                case 4: // LesserThan
+                    return a < b;
+                case 5: // LesserOrEvenThan
+                    return a <= b;
+                default:
+                    return false;
+            }
+        }
+
+        public static bool CheckString(string a, string b, int mode) {
+            switch (mode) {
+                case 0: // Same
+                    return a == b;
+                case 1: // NotSame
                     return a != b;
                 default:
                     return false;
@@ -111,21 +127,21 @@ namespace LGP.EventEditor {
                 for (int j = 0; j < fieldInfos.Length; j++) {
                     FieldInfo field = fieldInfos[j];
                     if (field.GetCustomAttribute(typeof(Conditional)) != null && (field.FieldType == typeFilter || typeFilter == null)) {
-                        result.Add(field.Name + " : " + field.FieldType.ToString().Split(char.Parse("."))[1]);
+                        result.Add(field.Name + " : " + field.FieldType.ToString().Split(char.Parse("."))[1].Replace("Single", "Float"));
                     }
                 }
                 PropertyInfo[] propertyInfos = component.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
                 for (int k = 0; k < propertyInfos.Length; k++) {
                     PropertyInfo property = propertyInfos[k];
                     if (property.GetCustomAttribute(typeof(Conditional)) != null && (property.PropertyType == typeFilter || typeFilter == null)) {
-                        result.Add(property.Name + " : " + property.PropertyType.ToString().Split(char.Parse("."))[1]);
+                        result.Add(property.Name + " : " + property.PropertyType.ToString().Split(char.Parse("."))[1].Replace("Single", "Float"));
                     }
                 }
                 MethodInfo[] methodInfos = component.GetType().GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
                 for (int l = 0; l < methodInfos.Length; l++) {
                     MethodInfo method = methodInfos[l];
                     if (method.GetCustomAttribute(typeof(Conditional)) != null && method.ReturnType != typeof(void) && !method.ContainsGenericParameters && method.GetParameters().Length == 0 && (method.ReturnType == typeFilter || typeFilter == null)) {
-                        result.Add(method.Name + "() : " + method.ReturnType.ToString().Split(char.Parse("."))[1]); // Function Format for clarity.
+                        result.Add(method.Name + "() : " + method.ReturnType.ToString().Split(char.Parse("."))[1].Replace("Single", "Float")); // Function Format for clarity.
                     }
                 }
             }
@@ -214,13 +230,18 @@ namespace LGP.EventEditor {
 
         #region Variables
         public GameObject gameObjectA, gameObjectB;
-        private int indexA, indexB, conditionIndex = -1;
+        [SerializeField] private int indexA, indexB, conditionIndex = -1;
         public int IndexA { get => indexA == -1 ? 0 : indexA; set => indexA = value; }
         public int IndexB { get => indexB == -1 ? 0 : indexB; set => indexB = value; }
+        public EConditionType type;
         public int ConditionIndex { get => conditionIndex == -1 ? 0 : conditionIndex; set => conditionIndex = value; }
-        public dynamic objectA, objectB;
+        //public dynamic objectA, objectB;
+        public bool[] objectBool = new bool[2];
+        public float[] objectFloat = new float[2];
+        public int[] objectInt = new int[2];
+        public string[] objectString = new string[2];
 
-        public bool ConditionViable { get => (objectA != null && objectB != null && conditionIndex >= 0); }
+        public bool IsValid { get => GetValue(0) != null && GetValue(1) != null && conditionIndex != -1; }
         #endregion
 
         #region Methods
@@ -228,19 +249,45 @@ namespace LGP.EventEditor {
             indexA = -1;
             indexB = -1;
             conditionIndex = -1;
-            objectA = null;
-            objectB = null;
+            objectBool = new bool[2];
+            objectFloat = new float[2];
+            objectInt = new int[2];
+            objectString = new string[2];
+        }
+        public void SetValue(object value, int index) {
+            index = Mathf.Clamp(index, 0, 1);
+            if (type == EConditionType.Boolean) objectBool[index] = (bool)value;
+            if (type == EConditionType.Integer) objectInt[index] = (int)value;
+            if (type == EConditionType.Float) objectFloat[index] = (float)value;
+            if (type == EConditionType.String) objectString[index] = (string)value;
+        }
+
+        public object GetValue(int index) {
+            index = Mathf.Clamp(index, 0, 1);
+            if (type == EConditionType.Boolean) return objectBool[index];
+            if (type == EConditionType.Integer) return objectInt[index];
+            if (type == EConditionType.Float) return objectFloat[index];
+            if (type == EConditionType.String) return objectString[index];
+            return null;
+        }
+
+        public bool CheckCondition() {
+            if (type == EConditionType.Boolean) return CheckBool(objectBool[0], objectBool[1], conditionIndex);
+            if (type == EConditionType.Integer) return CheckInt(objectInt[0], objectInt[1], conditionIndex);
+            if (type == EConditionType.Float) return CheckFloat(objectFloat[0], objectFloat[1], conditionIndex);
+            if (type == EConditionType.String) return CheckString(objectString[0], objectString[1], conditionIndex);
+            return false;
         }
         #endregion
     }
 
     public enum ENummeralCondition {
-       Equal,
-       NotEqual,
-       GreaterThan,
-       GreaterOrEvenThan,
-       LesserThan,
-       LesserOrEvenThan
+        Equal,
+        NotEqual,
+        GreaterThan,
+        GreaterOrEvenThan,
+        LesserThan,
+        LesserOrEvenThan
     }
 
     public enum EBoolConditionMode {

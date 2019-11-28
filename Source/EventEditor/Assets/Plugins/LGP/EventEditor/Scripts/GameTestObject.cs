@@ -22,12 +22,12 @@ namespace LGP.EventEditor {
         private static int staticConditionalPrivateInt = 1;
 
         // Float
-        public static int staticPublicFloat = 1;
+        public static float staticPublicFloat = 1f;
         [Conditional]
-        public static int staticConditionalPublicFloat = 1;
-        private static int staticPrivateFloat = 1;
+        public static float staticConditionalPublicFloat = 1f;
+        private static float staticPrivateFloat = 1f;
         [Conditional]
-        private static int staticConditionalPrivateFloat = 1;
+        private static float staticConditionalPrivateFloat = 1f;
 
         // String
         public static string staticPublicString = "Test";
@@ -56,12 +56,12 @@ namespace LGP.EventEditor {
         private static int StaticConditionalPrivateIntFunction() => 1;
 
         // Float
-        public static int StaticPublicFloatFunction() => 1;
+        public static float StaticPublicFloatFunction() => 1f;
         [Conditional]
-        public static int StaticConditionalPublicFloatFunction() => 1;
-        private static int StaticPrivateFloatFunction() => 1;
+        public static float StaticConditionalPublicFloatFunction() => 1f;
+        private static float StaticPrivateFloatFunction() => 1f;
         [Conditional]
-        private static int StaticConditionalPrivateFloatFunction() => 1;
+        private static float StaticConditionalPrivateFloatFunction() => 1f;
 
         // String
         public static string StaticPublicStringFunction() => "Test";
@@ -90,12 +90,12 @@ namespace LGP.EventEditor {
         private int conditionalPrivateInt = 1;
 
         // Float
-        public int publicFloat = 1;
+        public float publicFloat = 1f;
         [Conditional]
-        public int conditionalPublicFloat = 1;
-        private int privateFloat = 1;
+        public float conditionalPublicFloat = 1f;
+        private float privateFloat = 1f;
         [Conditional]
-        private int conditionalPrivateFloat = 1;
+        private float conditionalPrivateFloat = 1f;
 
         // String
         public string publicString = "Test";
@@ -158,12 +158,12 @@ namespace LGP.EventEditor {
         private int ConditionalPrivateIntFunction() => 1;
 
         // Float
-        public int PublicFloatFunction() => 1;
+        public float PublicFloatFunction() => 1f;
         [Conditional]
-        public int ConditionalPublicFloatFunction() => 1;
-        private int PrivateFloatFunction() => 1;
+        public float ConditionalPublicFloatFunction() => 1f;
+        private float PrivateFloatFunction() => 1f;
         [Conditional]
-        private int ConditionalPrivateFloatFunction() => 1;
+        private float ConditionalPrivateFloatFunction() => 1f;
 
         // String
         public string PublicStringFunction() => "Test";
