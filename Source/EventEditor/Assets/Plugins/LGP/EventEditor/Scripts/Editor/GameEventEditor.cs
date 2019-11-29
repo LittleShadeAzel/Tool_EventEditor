@@ -10,13 +10,15 @@ namespace LGP.EventEditor {
     [CustomEditor(typeof(GameEvent))]
     public class GameEventEditor : Editor {
 
-        #region Static Constants
-        public static Color32 WARNING_COLOR => new Color32(255, 128, 0, 128);
-        public static Color32 CONDITION_TRUE_COLOR => new Color32(0, 255, 0, 128);
-        public static Color32 CONDITION_FALSE_COLOR => new Color32(255, 0, 0, 128);
+        #region Statics
+        public static Color32 WARNING_COLOR => new Color32(255, 255, 0, 128);       // Yellow
+        public static Color32 CONDITION_TRUE_COLOR => new Color32(0, 255, 0, 128);  // Green
+        public static Color32 CONDITION_FALSE_COLOR => new Color32(255, 0, 0, 128); // Red
+        public static Color32 ACTIVE_PAGE_COLOR => new Color32(0, 0, 255, 128);     // Blue
         #endregion
 
         #region Variables
+        private const string CREATE_PAGE_INFO = "Create or select a page.";
         private GameEvent gameEvent;
         public SerializedProperty selectedPageIndex;
         private EEPageEditor pageEditor = null;
@@ -29,6 +31,10 @@ namespace LGP.EventEditor {
             gameEvent.RefreshPages();
             serializedObject.Update();
             selectedPageIndex = serializedObject.FindProperty("selectedPageIndex");
+            if (string.IsNullOrEmpty(gameEvent.displayName)) {
+                serializedObject.FindProperty("displayName").stringValue = gameEvent.name;
+                serializedObject.ApplyModifiedProperties();
+            }
             reordlistEventPages = MakeReordList();
         }
 
@@ -50,13 +56,13 @@ namespace LGP.EventEditor {
 
         #region Methods
         private void DrawInspector() {
-            gameEvent.displayName = EditorGUILayout.TextField("Name:", string.Empty, EditorStyles.textField);
+            gameEvent.displayName = EditorGUILayout.TextField("Name:", gameEvent.displayName, EditorStyles.textField);
             reordlistEventPages.DoLayoutList();
             EEPageEditor pageEditor = GetPageEditor();
             if (pageEditor) {
                 pageEditor.DrawInspectorGUI();
             } else {
-                EditorGUILayout.HelpBox("Create or select a page.", MessageType.Info);
+                EditorGUILayout.HelpBox(CREATE_PAGE_INFO, MessageType.Info);
             }
         }
 
@@ -88,8 +94,12 @@ namespace LGP.EventEditor {
                     SerializedObject serializedEventPage = new SerializedObject(page);
 
                     EditorGUI.PropertyField(contentRect, serializedEventPage.FindProperty("displayName"), GUIContent.none);
+                    if (page == serializedObject.FindProperty("activePage").objectReferenceValue) {
+                        EditorGUI.DrawRect(conditionStatusRect, ACTIVE_PAGE_COLOR);
+                    } else {
+                        EditorGUI.DrawRect(conditionStatusRect, page.CheckConditons() ? CONDITION_TRUE_COLOR : CONDITION_FALSE_COLOR);
+                    }
 
-                    EditorGUI.DrawRect(conditionStatusRect, page.CheckConditons() ? CONDITION_TRUE_COLOR : CONDITION_FALSE_COLOR);
                     if (GUI.changed) {
                         serializedEventPage.ApplyModifiedProperties();
                     }

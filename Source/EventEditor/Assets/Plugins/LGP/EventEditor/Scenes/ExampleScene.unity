@@ -120,33 +120,7 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!114 &306304814
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb47dbc39e14a6940b60117a18e1f57c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gameObjectA: {fileID: 1293064802}
-  gameObjectB: {fileID: 1293064802}
-  indexA: 6
-  indexB: 2
-  conditionIndex: 1
-  type: 3
-  objectBool: 0000
-  objectFloat:
-  - 0
-  - 0
-  objectInt: 0000000000000000
-  objectString:
-  - Test
-  - Test
---- !u!114 &506285452
+--- !u!114 &40331932
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -158,28 +132,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e06865e045b19784f84d238373967dd5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameEvent: {fileID: 1293064803}
   displayName: Page1
   order: 0
-  conditionIndex: 0
+  conditionIndex: -1
   conditions: []
---- !u!114 &652940518
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e06865e045b19784f84d238373967dd5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  displayName: Page2
-  order: 1
-  conditionIndex: 1
-  conditions:
-  - {fileID: 306304814}
-  - {fileID: 769116030}
+  unityEvents:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1293064802}
+        m_MethodName: set_name
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  triggerIndex: 1
+  isLooping: 0
+  isCoroutine: 0
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -271,32 +245,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!114 &769116030
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb47dbc39e14a6940b60117a18e1f57c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gameObjectA: {fileID: 1293064802}
-  gameObjectB: {fileID: 0}
-  indexA: 6
-  indexB: -1
-  conditionIndex: 1
-  type: 3
-  objectBool: 0000
-  objectFloat:
-  - 0
-  - 0
-  objectInt: 0000000000000000
-  objectString:
-  - Test
-  - Nigger
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -410,12 +358,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35110aa5a907fb04b8927c14ccae35bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayName: 
-  activeEventPage: {fileID: 0}
+  displayName: Random Event
+  activePage: {fileID: 0}
   selectedPageIndex: 0
   pages:
-  - {fileID: 506285452}
-  - {fileID: 652940518}
+  - {fileID: 40331932}
 --- !u!4 &1293064804
 Transform:
   m_ObjectHideFlags: 0
