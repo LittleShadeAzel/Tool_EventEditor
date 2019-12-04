@@ -9,15 +9,28 @@ using UnityEditor;
 using UnityEditorInternal;
 
 namespace LGP.EventEditor {
+
+
     /// <summary>
     /// This class enables game objects to have an event editor. 
     /// An event contains one or many pages which can change the event processing depending on what page is currently active.
     /// </summary>
     public class GameEvent : MonoBehaviour {
+
+        #region Delegates
+        /// <summary>
+        /// This delegate fires when a page becomes active.
+        /// </summary>
+        /// <param name="page">Returns the new active page</param>
+        public delegate void OnPageActiveDelegate(EEPage page);
+        #endregion
+
         #region Variables
-        public string displayName;
-        public EEPage activePage;
         [SerializeField] private int selectedPageIndex = -1;
+        public int SelectedPageIndex { get => selectedPageIndex; }
+        [SerializeField] private EEPage activePage;
+        public EEPage ActivePage { get => activePage; }
+        public OnPageActiveDelegate onPageActive;
         public EEPage SelectedEventPage { get => selectedPageIndex >= 0 && selectedPageIndex < pages.Count ? pages[selectedPageIndex] : null; }
         public List<EEPage> pages = new List<EEPage>();
         [SerializeField] private Dictionary<string, bool> localSwtiches = new Dictionary<string, bool>();
@@ -26,16 +39,11 @@ namespace LGP.EventEditor {
 
         #region Unity Methods 
         private void OnEnable() {
-
+            onPageActive += StartPageSetup;
         }
 
         private void Update() {
-            EEPage newPage = GetActivePage();
-            if (activePage != newPage) {
-                StopAllCoroutines();
-                activePage = newPage;
-            }
-            InvokePageFunctions();
+            CheckActivePage();
         }
 
         private void OnDisable() {
@@ -64,11 +72,11 @@ namespace LGP.EventEditor {
         public EEPage AddNewEventPage() {
             EEPage page = ScriptableObject.CreateInstance<EEPage>();
             Undo.RegisterCreatedObjectUndo(page, "Created Page");
-            SerializedObject serializedPage = new SerializedObject(page);
+            SerializedObject serialPage = new SerializedObject(page);
             //serializedPage.FindProperty("order").intValue = pages.Count - 1;
-            serializedPage.FindProperty("displayName").stringValue = "Page" + (pages.Count + 1);
-            serializedPage.FindProperty("gameEvent").objectReferenceValue = this;
-            serializedPage.ApplyModifiedProperties();
+            serialPage.FindProperty("displayName").stringValue = "Page" + (pages.Count + 1);
+            serialPage.FindProperty("owner").objectReferenceValue = this;
+            serialPage.ApplyModifiedProperties();
             pages.Add(page);
 
             //page.displayName = "Page" + (eventPages.Count + 1);
@@ -122,7 +130,6 @@ namespace LGP.EventEditor {
         }
 
         public bool GetLocalSwtich(string key) {
-            if (!localSwtiches.ContainsKey(key)) return false;
             if (localSwtiches.TryGetValue(key, out bool value)) return value;
             return false;
         }
@@ -131,13 +138,25 @@ namespace LGP.EventEditor {
             if (!activePage) return;
             if (activePage.IsRunning) return;
             if (activePage.TriggerMode == ETriggerMode.Autorun) {
-                if (activePage.isCoroutine) {
-                    StartCoroutine(activePage.RunFunctionsParallel());
-                } else {
-                    activePage.InvokeFunctions();
-                }
+                activePage.InvokeFunctions();
             }
         }
+
+        private void CheckActivePage() {
+            EEPage newPage = GetActivePage();
+            if (activePage != newPage) {
+                StopAllCoroutines();
+                activePage = newPage;
+                if (onPageActive != null) onPageActive.Invoke(activePage);
+                InvokePageFunctions();
+            }
+        }
+
+        private void StartPageSetup(EEPage page) {
+            activePage.Setup();
+        }
+
+        
 
         public void ForceFunctionStop() {
             if (!activePage) return;

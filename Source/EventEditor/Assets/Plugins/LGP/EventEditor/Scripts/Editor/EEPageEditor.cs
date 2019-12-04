@@ -20,7 +20,6 @@ namespace LGP.EventEditor {
         private GameEventEditor eventEditor;
         private ReorderableList conditionList;
         private GenericMenu menu = new GenericMenu();
-
         #endregion
 
         #region Unity Methods
@@ -60,7 +59,7 @@ namespace LGP.EventEditor {
             EEPage page = (EEPage)target;
 
             // Draw Header
-            EditorGUILayout.LabelField(page.displayName, EditorStyles.boldLabel);
+            EditorGUILayout.LabelField(page.DisplayName, EditorStyles.boldLabel);
 
             // Draw Conditions
             conditionList.index = serializedObject.FindProperty("conditionIndex").intValue;
@@ -68,11 +67,10 @@ namespace LGP.EventEditor {
 
             // Draw Trigger
             EditorGUILayout.LabelField("Trigger", EditorStyles.boldLabel);
-            serializedObject.FindProperty("isLooping").boolValue = EditorGUILayout.Toggle("Loop Functions", page.isLooping);
-            serializedObject.FindProperty("isCoroutine").boolValue = EditorGUILayout.Toggle("Run as Coroutine", page.isCoroutine);
+            serializedObject.FindProperty("isCoroutine").boolValue = EditorGUILayout.Toggle("Run as Coroutine", page.IsCoroutine);
 
             SerializedProperty serialTriggerIndex = serializedObject.FindProperty("triggerIndex");
-            serialTriggerIndex.intValue = EditorGUILayout.Popup(page.triggerIndex, Enum.GetNames(typeof(ETriggerMode)));
+            serialTriggerIndex.intValue = EditorGUILayout.Popup(page.TriggerIndex, Enum.GetNames(typeof(ETriggerMode)));
             MakeTriggerContent(page.TriggerMode);
 
 
@@ -103,7 +101,7 @@ namespace LGP.EventEditor {
                     float padding = 15;
                     Rect conditionStatusRect = new Rect(rect.x, rect.y, padding, rect.height);
                     #region Type of GameObject
-                    if (condition.type == EConditionType.GameObject) {
+                    if (condition.Type == EConditionType.GameObject) {
                         // Setup
                         Rect contentRect = new Rect(rect.x + padding, rect.y, rect.width - padding, rect.height);
                         Rect gameObjectARect = new Rect(contentRect.x, contentRect.y, contentRect.width / 2, contentRect.height / 2);
@@ -118,7 +116,7 @@ namespace LGP.EventEditor {
 
                         // Set Game Object A
                         EditorGUI.ObjectField(gameObjectARect, serialGameObjectA, emptyLabel);
-                        GameObject gameObjectA = condition.gameObjectA;
+                        GameObject gameObjectA = condition.GameObjectA;
                         if (gameObjectA) {
                             // Conditional Field Object A
                             string[] optionListA = Condition.GetConditionalFieldOptionList(gameObjectA, null);
@@ -131,7 +129,7 @@ namespace LGP.EventEditor {
                                 }
                                 condition.IndexA = newIndex;
                                 var objectInfoA = Condition.GetConditionalFieldFromIndex(gameObjectA, null, condition.IndexA);
-                                condition.objectType = Condition.GetConditionType(objectInfoA);
+                                condition.ObjectType = Condition.GetConditionType(objectInfoA);
                                 if (objectInfoA is FieldInfo field) {
                                     condition.SetValue(field.GetValue(gameObjectA.GetComponent(field.DeclaringType)), 0);
                                 } else if (objectInfoA is PropertyInfo property) {
@@ -141,9 +139,9 @@ namespace LGP.EventEditor {
                                 }
 
                                 // Draw Condition Drop Down
-                                if (condition.objectType == EConditionObjectType.Boolean) {
+                                if (condition.ObjectType == EConditionObjectType.Boolean) {
                                     condition.ConditionIndex = EditorGUI.Popup(conditionModeRect, condition.ConditionIndex, Enum.GetNames(typeof(EBoolConditionMode)));
-                                } else if (condition.objectType == EConditionObjectType.Integer || condition.objectType == EConditionObjectType.Float) {
+                                } else if (condition.ObjectType == EConditionObjectType.Integer || condition.ObjectType == EConditionObjectType.Float) {
                                     condition.ConditionIndex = EditorGUI.Popup(conditionModeRect, condition.ConditionIndex, Enum.GetNames(typeof(ENummeralCondition)));
                                 } else {
                                     condition.ConditionIndex = EditorGUI.Popup(conditionModeRect, condition.ConditionIndex, Enum.GetNames(typeof(EStringConditionMode)));
@@ -179,16 +177,16 @@ namespace LGP.EventEditor {
                                     }// end ObjectFieldB
                                 } else {
                                     // No defined GameObjectB => Offer user defined values
-                                    if (condition.objectType == EConditionObjectType.Boolean) condition.SetValue(EditorGUI.Toggle(objectFieldBRect, condition.objectBool[1]), 1);
-                                    if (condition.objectType == EConditionObjectType.Integer) condition.SetValue(EditorGUI.IntField(objectFieldBRect, condition.objectInt[1]), 1);
-                                    if (condition.objectType == EConditionObjectType.Float) condition.SetValue(EditorGUI.FloatField(objectFieldBRect, condition.objectFloat[1]), 1);
-                                    if (condition.objectType == EConditionObjectType.String) condition.SetValue(EditorGUI.TextField(objectFieldBRect, condition.objectString[1]), 1);
+                                    if (condition.ObjectType == EConditionObjectType.Boolean) condition.SetValue(EditorGUI.Toggle(objectFieldBRect, condition.ObjectBool[1]), 1);
+                                    if (condition.ObjectType == EConditionObjectType.Integer) condition.SetValue(EditorGUI.IntField(objectFieldBRect, condition.ObjectInt[1]), 1);
+                                    if (condition.ObjectType == EConditionObjectType.Float) condition.SetValue(EditorGUI.FloatField(objectFieldBRect, condition.ObjectFloat[1]), 1);
+                                    if (condition.ObjectType == EConditionObjectType.String) condition.SetValue(EditorGUI.TextField(objectFieldBRect, condition.ObjectString[1]), 1);
                                 }// end GameobjectB
                             } else {
                                 // No Conditional Fields detected in GameObjectA => Clear Conditions and GameObjectB
                                 EditorGUI.LabelField(objectFieldARect, NO_FIELD_DETECTED);
                                 condition.ClearCondition();
-                                condition.gameObjectB = null;
+                                condition.GameObjectB = null;
                             }// End ObjectFieldA
                         } else {
                             EditorGUI.HelpBox(infoFieldRect, SELECT_SCENEOBJECT, MessageType.Info);
@@ -198,27 +196,29 @@ namespace LGP.EventEditor {
                     #endregion
 
                     #region Type of Local Swtich
-                    if (condition.type == EConditionType.LocalSwtich) {
+                    if (condition.Type == EConditionType.LocalSwtich) {
                         Rect contentRect = new Rect(rect.x + padding, rect.y, rect.width - padding, rect.height);
-                        Rect labelRect = new Rect(contentRect.x, contentRect.y, contentRect.width / 2, contentRect.height / 2);
+                        Rect labelRect = new Rect(contentRect.x, contentRect.y, contentRect.width, contentRect.height / 2);
                         Rect keyRect = new Rect(contentRect.x, contentRect.y + contentRect.height / 2, contentRect.width / 3, contentRect.height / 2);
                         Rect infoFieldRect = new Rect(contentRect.x + contentRect.width / 2, contentRect.y, contentRect.width / 2, contentRect.height);
                         Rect label2Rect = new Rect(contentRect.x + keyRect.width, contentRect.y + contentRect.height / 2, contentRect.width / 3, contentRect.height / 2);
                         Rect toggleRect = new Rect(contentRect.x + keyRect.width * 2, contentRect.y + contentRect.height / 2, contentRect.width / 3, contentRect.height / 2);
+                        Rect infoField2Rect = new Rect(contentRect.x + contentRect.width / 2, contentRect.y, contentRect.width / 2, contentRect.height / 2);
 
                         EditorGUI.LabelField(labelRect, "Local Swtich");
-                        condition.localSwtichKey = EditorGUI.TextArea(keyRect, condition.localSwtichKey);
-                        if (condition.localSwtichKey != string.Empty) {
-                            EditorGUI.LabelField(label2Rect, " is ");
-                            condition.localSwitchValue = EditorGUI.Toggle(toggleRect, condition.localSwitchValue);
-                        } else {
+                        if (condition.LocalSwtichKey == string.Empty) {
                             EditorGUI.HelpBox(infoFieldRect, "Define a Local Switch.", MessageType.Info);
+                        } else {
+                            if (!condition.ExistLocalSwtich) EditorGUI.LabelField(labelRect, "Local Swtich (Doesn't exits at the moment)");
+                            EditorGUI.LabelField(label2Rect, " is ");
+                            condition.LocalSwitchValue = EditorGUI.Toggle(toggleRect, condition.LocalSwitchValue);
                         }
+                        condition.LocalSwtichKey = EditorGUI.TextArea(keyRect, condition.LocalSwtichKey);
                     }
                     #endregion
 
                     #region Type Global Swtich
-                    if (condition.type == EConditionType.GlobalSwtich) {
+                    if (condition.Type == EConditionType.GlobalSwtich) {
 
                     }
                     #endregion
@@ -243,8 +243,8 @@ namespace LGP.EventEditor {
                 EEPage page = (EEPage)target;
                 page.RemoveCondition(list.index);
                 serializedObject.Update();
-                if (list.index == page.conditions.Count) {
-                    serializedObject.FindProperty("conditionIndex").intValue = page.conditions.Count - 1;
+                if (list.index == page.Conditions.Count) {
+                    serializedObject.FindProperty("conditionIndex").intValue = page.Conditions.Count - 1;
                 }
                 serializedObject.ApplyModifiedProperties();
             };
@@ -255,16 +255,15 @@ namespace LGP.EventEditor {
                 serializedObject.ApplyModifiedProperties();
             };
 
-
             // Add Element from Drop Down
             reordList.onAddDropdownCallback = (Rect buttonRect, ReorderableList list) => {
                 EEPage page = (EEPage)target;
                 Condition condition = page.AddCondition();
                 serializedObject.Update();
-                serializedObject.FindProperty("conditionIndex").intValue = page.conditions.Count - 1;
+                serializedObject.FindProperty("conditionIndex").intValue = page.Conditions.Count - 1;
                 serializedObject.ApplyModifiedProperties();
                 menu.AddItem(new GUIContent("Local Swtich"), false, OnAddLocalSwtich, condition);
-                menu.AddItem(new GUIContent("Global Swtich"), false, OnAddGlobalSwtich, condition);
+                //menu.AddItem(new GUIContent("Global Swtich"), false, OnAddGlobalSwtich, condition);// TO DO: Yet to be implemented
                 menu.AddItem(new GUIContent("GameObject"), false, OnAddObjectSelected, condition);
                 menu.ShowAsContext();
             };
@@ -291,11 +290,9 @@ namespace LGP.EventEditor {
         }
 
         private void MakeTriggerContent(ETriggerMode mode) {
-
             if (mode == ETriggerMode.Collision) {
 
             }
-
         }
         #endregion
     }

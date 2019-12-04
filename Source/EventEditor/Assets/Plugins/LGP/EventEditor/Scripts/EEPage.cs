@@ -13,20 +13,27 @@ namespace LGP.EventEditor {
     [Serializable]
     public class EEPage : ScriptableObject {
         #region Variables
-        public GameEvent gameEvent;
-        public string displayName;
-        public int order;
-        public int conditionIndex = -1;
-        public List<Condition> conditions = new List<Condition>();
-        public UnityEvent unityEvents = new UnityEvent();
-        public int triggerIndex = -1;
-        public bool isLooping;
-        public bool isCoroutine;
-        private bool isRunning = false;
-        public bool IsRunning => isRunning;
+        [SerializeField] private GameEvent owner;
+        public GameEvent Owner { get => owner; set => owner = value; }
+        [SerializeField] private string displayName;
+        public string DisplayName { get => displayName; }
+        [SerializeField] private int conditionIndex = -1;
+        public int ConditionIndex { get => conditionIndex; }
+        [SerializeField] private List<Condition> conditions = new List<Condition>();
+        public List<Condition> Conditions { get => conditions; }
+        [SerializeField] private UnityEvent unityEvents = new UnityEvent();
+        public UnityEvent UnityEvents { get => unityEvents; }
+        [SerializeField] private int triggerIndex;
+        public int TriggerIndex { get => triggerIndex; }
+        private bool isLooping;
+        public bool IsLooping { get => isLooping; }
+        [SerializeField] private bool isCoroutine;
+        public bool IsCoroutine { get => isCoroutine; }
+        private bool isRunning;
+        public bool IsRunning { get => isRunning; }
         private bool isForcingStop = false;
         public ETriggerMode TriggerMode {
-            get {
+            get {                 
                 if (Enum.TryParse<ETriggerMode>(Enum.GetNames(typeof(ETriggerMode))[triggerIndex], out ETriggerMode result)) return result;
                 return ETriggerMode.Autorun;
             }
@@ -35,7 +42,13 @@ namespace LGP.EventEditor {
         #endregion
 
         #region UnityMethods
+        private void OnEnable() {
 
+        }
+
+        private void OnDisable() {
+
+        }
         #endregion
 
         #region Methods
@@ -75,13 +88,20 @@ namespace LGP.EventEditor {
             return true;
         }
 
+        public void Setup() {
+
+        }
+
         public void ForceStop() {
             isForcingStop = true;
+            isRunning = false;
         }
 
         public void InvokeFunctions() {
             if (!isCoroutine) {
                 RunFunctionsProcedural();
+            } else {
+                owner.StartCoroutine(RunFunctionsParallel());
             }
         }
 

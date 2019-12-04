@@ -31,10 +31,6 @@ namespace LGP.EventEditor {
             gameEvent.RefreshPages();
             serializedObject.Update();
             selectedPageIndex = serializedObject.FindProperty("selectedPageIndex");
-            if (string.IsNullOrEmpty(gameEvent.displayName)) {
-                serializedObject.FindProperty("displayName").stringValue = gameEvent.name;
-                serializedObject.ApplyModifiedProperties();
-            }
             reordlistEventPages = MakeReordList();
         }
 
@@ -56,7 +52,6 @@ namespace LGP.EventEditor {
 
         #region Methods
         private void DrawInspector() {
-            gameEvent.displayName = EditorGUILayout.TextField("Name:", gameEvent.displayName, EditorStyles.textField);
             reordlistEventPages.DoLayoutList();
             EEPageEditor pageEditor = GetPageEditor();
             if (pageEditor) {
@@ -91,9 +86,9 @@ namespace LGP.EventEditor {
                     Rect contentRect = new Rect(rect.x + padding, rect.y, rect.width - padding, rect.height);
                     Rect conditionStatusRect = new Rect(rect.x, rect.y, 15, rect.height);
 
-                    SerializedObject serializedEventPage = new SerializedObject(page);
+                    SerializedObject serialPage = new SerializedObject(page);
 
-                    EditorGUI.PropertyField(contentRect, serializedEventPage.FindProperty("displayName"), GUIContent.none);
+                    EditorGUI.PropertyField(contentRect, serialPage.FindProperty("displayName"), GUIContent.none);
                     if (page == serializedObject.FindProperty("activePage").objectReferenceValue) {
                         EditorGUI.DrawRect(conditionStatusRect, ACTIVE_PAGE_COLOR);
                     } else {
@@ -101,7 +96,7 @@ namespace LGP.EventEditor {
                     }
 
                     if (GUI.changed) {
-                        serializedEventPage.ApplyModifiedProperties();
+                        serialPage.ApplyModifiedProperties();
                     }
                 }
             };

@@ -10,7 +10,6 @@ namespace LGP.EventEditor {
     /// </summary>
     [Serializable]
     public class Condition : ScriptableObject {
-
         #region Static Object Info Handlers
         /// <summary>
         /// Returns the Type of an info typed object.
@@ -246,26 +245,36 @@ namespace LGP.EventEditor {
         #endregion
 
         #region Variables
-        public EEPage page;
-        public GameObject gameObjectA, gameObjectB;
-        [SerializeField] private int indexA, indexB, conditionIndex = -1;
+        // Most of the fields are public for simplicity.
+        [SerializeField] private EEPage page;
+        public EEPage Page { get => page; set => page = value; }
+        [SerializeField] private GameObject gameObjectA, gameObjectB;
+        public GameObject GameObjectA { get => gameObjectA; set => gameObjectA = value; }
+        public GameObject GameObjectB { get => gameObjectB; set => gameObjectB = value; }
+        private int indexA, indexB, conditionIndex = -1;
         public int IndexA { get => indexA == -1 ? 0 : indexA; set => indexA = value; }
         public int IndexB { get => indexB == -1 ? 0 : indexB; set => indexB = value; }
-        public string localSwtichKey;
-        public bool localSwitchValue;
-        public EConditionObjectType objectType;
-        public EConditionType type;
+        [SerializeField] private string localSwtichKey;
+        public string LocalSwtichKey { get => localSwtichKey; set => localSwtichKey = value; }
+        [SerializeField] private bool localSwtichValue;
+        public bool LocalSwitchValue { get => localSwtichValue; set => localSwtichValue = value; }
+        [SerializeField] private EConditionObjectType objectType;
+        public EConditionObjectType ObjectType { get => objectType; set => objectType = value; }
+        [SerializeField] private EConditionType type;
+        public EConditionType Type { get => type; set => type = value; }
         public int ConditionIndex { get => conditionIndex == -1 ? 0 : conditionIndex; set => conditionIndex = value; }
-        //public dynamic objectA, objectB;
-        public bool[] objectBool = new bool[2];
-        public float[] objectFloat = new float[2];
-        public int[] objectInt = new int[2];
-        public string[] objectString = new string[2];
-
+        private bool[] objectBool = new bool[2];
+        public bool[] ObjectBool { get => objectBool; set => objectBool = value; }
+        private float[] objectFloat = new float[2];
+        public float[] ObjectFloat { get => objectFloat; set => objectFloat = value; }
+        private int[] objectInt = new int[2];
+        public int[] ObjectInt { get => objectInt; set => objectInt = value; }
+        private string[] objectString = new string[2];
+        public string[] ObjectString { get => objectString; set => objectString = value; }
         public bool IsValid { get => IsObjectValid || IsLocalSwitchValid; }
-        public bool IsLocalSwitchValid { get => localSwtichKey != string.Empty; }
+        public bool IsLocalSwitchValid { get => LocalSwtichKey != string.Empty; }
         public bool IsObjectValid { get => GetValue(0) != null && GetValue(1) != null && conditionIndex != -1; }
-        
+        public bool ExistLocalSwtich { get => Page.Owner.LocalSwitches.ContainsKey(LocalSwtichKey); }
         #endregion
 
         #region Methods
@@ -276,8 +285,8 @@ namespace LGP.EventEditor {
             indexA = -1;
             indexB = -1;
             conditionIndex = -1;
-            localSwtichKey = string.Empty;
-            localSwitchValue = false;
+            LocalSwtichKey = string.Empty;
+            LocalSwitchValue = false;
             objectBool = new bool[2];
             objectFloat = new float[2];
             objectInt = new int[2];
@@ -291,10 +300,10 @@ namespace LGP.EventEditor {
         /// <param name="index">Determiens position of the array the value will be stored in. Either 0 or 1.</param>
         public void SetValue(object value, int index) {
             index = Mathf.Clamp(index, 0, 1);
-            if (objectType == EConditionObjectType.Boolean) objectBool[index] = (bool)value;
-            if (objectType == EConditionObjectType.Integer) objectInt[index] = (int)value;
-            if (objectType == EConditionObjectType.Float) objectFloat[index] = (float)value;
-            if (objectType == EConditionObjectType.String) objectString[index] = (string)value;
+            if (ObjectType == EConditionObjectType.Boolean) objectBool[index] = (bool)value;
+            if (ObjectType == EConditionObjectType.Integer) objectInt[index] = (int)value;
+            if (ObjectType == EConditionObjectType.Float) objectFloat[index] = (float)value;
+            if (ObjectType == EConditionObjectType.String) objectString[index] = (string)value;
         }
 
         /// <summary>
@@ -304,10 +313,10 @@ namespace LGP.EventEditor {
         /// <returns>Returns the condition Object.</returns>
         public object GetValue(int index) {
             index = Mathf.Clamp(index, 0, 1);
-            if (objectType == EConditionObjectType.Boolean) return objectBool[index];
-            if (objectType == EConditionObjectType.Integer) return objectInt[index];
-            if (objectType == EConditionObjectType.Float) return objectFloat[index];
-            if (objectType == EConditionObjectType.String) return objectString[index];
+            if (ObjectType == EConditionObjectType.Boolean) return objectBool[index];
+            if (ObjectType == EConditionObjectType.Integer) return objectInt[index];
+            if (ObjectType == EConditionObjectType.Float) return objectFloat[index];
+            if (ObjectType == EConditionObjectType.String) return objectString[index];
             return null;
         }
 
@@ -316,13 +325,14 @@ namespace LGP.EventEditor {
         /// </summary>
         /// <returns>True, if both object meet with the condition.</returns>
         public bool CheckCondition() {
-            if (type == EConditionType.LocalSwtich) return page.gameEvent.GetLocalSwtich(localSwtichKey) == localSwitchValue;
-            if (type == EConditionType.GlobalSwtich) return false;
-            if (type == EConditionType.GameObject) {
-                if (objectType == EConditionObjectType.Boolean) return CheckBool(objectBool[0], objectBool[1], conditionIndex);
-                if (objectType == EConditionObjectType.Integer) return CheckInt(objectInt[0], objectInt[1], conditionIndex);
-                if (objectType == EConditionObjectType.Float) return CheckFloat(objectFloat[0], objectFloat[1], conditionIndex);
-                if (objectType == EConditionObjectType.String) return CheckString(objectString[0], objectString[1], conditionIndex);
+            if (Type == EConditionType.LocalSwtich) 
+                if (ExistLocalSwtich) return Page.Owner.GetLocalSwtich(localSwtichKey) == localSwtichValue;
+            if (Type == EConditionType.GlobalSwtich) return false;
+            if (Type == EConditionType.GameObject) {
+                if (ObjectType == EConditionObjectType.Boolean) return CheckBool(objectBool[0], objectBool[1], conditionIndex);
+                if (ObjectType == EConditionObjectType.Integer) return CheckInt(objectInt[0], objectInt[1], conditionIndex);
+                if (ObjectType == EConditionObjectType.Float) return CheckFloat(objectFloat[0], objectFloat[1], conditionIndex);
+                if (ObjectType == EConditionObjectType.String) return CheckString(objectString[0], objectString[1], conditionIndex);
             }
             return false;
         }
