@@ -26,32 +26,22 @@ namespace LGP.EventEditor {
         [SerializeField] private int triggerIndex;
         public int TriggerIndex { get => triggerIndex; }
         private bool isLooping;
-        public bool IsLooping { get => isLooping; }
+        public bool IsLooping { get => isLooping; set => isLooping = value; }
         [SerializeField] private bool isCoroutine;
         public bool IsCoroutine { get => isCoroutine; }
         private bool isRunning;
-        public bool IsRunning { get => isRunning; }
         private bool isForcingStop = false;
+        public bool IsReady { get => !isRunning; }
         public ETriggerMode TriggerMode {
             get {                 
                 if (Enum.TryParse<ETriggerMode>(Enum.GetNames(typeof(ETriggerMode))[triggerIndex], out ETriggerMode result)) return result;
-                return ETriggerMode.Autorun;
+                return ETriggerMode.Interaction;
             }
-        }
-
-        #endregion
-
-        #region UnityMethods
-        private void OnEnable() {
-
-        }
-
-        private void OnDisable() {
-
         }
         #endregion
 
         #region Methods
+        #region Methods: Condition Getters/Setters
         /// <summary>
         /// Adds a condition the the page.
         /// </summary>
@@ -87,16 +77,15 @@ namespace LGP.EventEditor {
             }
             return true;
         }
+        #endregion
 
+        #region Methods: Setup Handlers
         public void Setup() {
-
+            // Handle Setup
         }
+        #endregion
 
-        public void ForceStop() {
-            isForcingStop = true;
-            isRunning = false;
-        }
-
+        #region Methods: Function Handlers
         public void InvokeFunctions() {
             if (!isCoroutine) {
                 RunFunctionsProcedural();
@@ -108,8 +97,8 @@ namespace LGP.EventEditor {
         public void RunFunctionsProcedural() {
             isRunning = true;
             do {
-                if (unityEvents.GetPersistentEventCount() > 0) unityEvents.Invoke();
                 if (isForcingStop) break;
+                if (unityEvents.GetPersistentEventCount() > 0) unityEvents.Invoke();
             } while (isLooping);
             isForcingStop = false;
             isRunning = false;
@@ -119,13 +108,19 @@ namespace LGP.EventEditor {
         public IEnumerator RunFunctionsParallel() {
             isRunning = true;
             do {
-                if (unityEvents.GetPersistentEventCount() > 0) unityEvents.Invoke();
                 if (isForcingStop) break;
+                if (unityEvents.GetPersistentEventCount() > 0) unityEvents.Invoke();
                 yield return null;
             } while (isLooping);
             isForcingStop = false;
             isRunning = false;
         }
+
+        public void ForceStop() {
+            isForcingStop = true;
+            isRunning = false;
+        }
+        #endregion
         #endregion
     }
 }

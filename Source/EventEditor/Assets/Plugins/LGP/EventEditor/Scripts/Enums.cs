@@ -1,11 +1,14 @@
 ﻿namespace LGP.EventEditor {
     /// <summary>
     /// Determines which way a page triggers.
+    /// Interaction => Triggers only with the "GameEvent.Interact(GameEvent event)" call.
+    /// Autorun => Automaticly triggers after the setup of the active page.
+    /// Custom => Triggers only when the custom trigger implemented by the interface CheckCustomTrigger returns true.
     /// </summary>
     public enum ETriggerMode {
         Interaction,
         Autorun,
-        Collision,
+        Custom,
     }
 
     /// <summary>

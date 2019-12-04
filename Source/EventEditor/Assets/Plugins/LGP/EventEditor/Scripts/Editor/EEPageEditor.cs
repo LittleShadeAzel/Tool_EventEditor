@@ -14,8 +14,6 @@ namespace LGP.EventEditor {
     public class EEPageEditor : Editor {
         #region Variables
         private bool showFunctions;
-        private const string NO_FIELD_DETECTED = "No fields detected.";
-        private const string SELECT_SCENEOBJECT = "Select a Scene Object.";
         private EEPage page;
         private GameEventEditor eventEditor;
         private ReorderableList conditionList;
@@ -41,9 +39,7 @@ namespace LGP.EventEditor {
         #endregion
 
         #region Methods
-        public void SetEventEditor(GameEventEditor editor) {
-            eventEditor = editor;
-        }
+        
 
         public void DrawInspectorGUI() {
             serializedObject.Update();
@@ -66,27 +62,25 @@ namespace LGP.EventEditor {
             conditionList.DoLayoutList();
 
             // Draw Trigger
-            EditorGUILayout.LabelField("Trigger", EditorStyles.boldLabel);
-            serializedObject.FindProperty("isCoroutine").boolValue = EditorGUILayout.Toggle("Run as Coroutine", page.IsCoroutine);
+            EditorGUILayout.LabelField(EEUtils.labels["Trigger"], EditorStyles.boldLabel);
+            serializedObject.FindProperty("isCoroutine").boolValue = EditorGUILayout.Toggle(EEUtils.labels["RunAsCoroutine"], page.IsCoroutine);
 
             SerializedProperty serialTriggerIndex = serializedObject.FindProperty("triggerIndex");
             serialTriggerIndex.intValue = EditorGUILayout.Popup(page.TriggerIndex, Enum.GetNames(typeof(ETriggerMode)));
             MakeTriggerContent(page.TriggerMode);
 
-
             // Draw Function
-            EditorGUILayout.LabelField("Functions", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField(EEUtils.labels["Functions"], EditorStyles.boldLabel);
             EditorGUILayout.PropertyField(serializedObject.FindProperty("unityEvents"));
             EditorGUILayout.EndVertical();
         }
-
 
         private ReorderableList MakeReordConditionList() {
             ReorderableList reordList = new ReorderableList(serializedObject, serializedObject.FindProperty("conditions"), false, true, true, true);
             reordList.elementHeight = EditorGUIUtility.singleLineHeight * 2;
             // Draw Header
             reordList.drawHeaderCallback = (Rect rect) => {
-                EditorGUI.LabelField(rect, "Conditions", EditorStyles.boldLabel);
+                EditorGUI.LabelField(rect, EEUtils.labels["Conditions"], EditorStyles.boldLabel);
             };
 
             // Draw Element
@@ -171,7 +165,7 @@ namespace LGP.EventEditor {
                                         }
                                     } else {
                                         // No Fields Detected
-                                        EditorGUI.LabelField(objectFieldBRect, NO_FIELD_DETECTED);
+                                        EditorGUI.LabelField(objectFieldBRect, EEUtils.labels["NoFields"]);
                                         condition.IndexB = -1;
                                         //condition.objectB = null;
                                     }// end ObjectFieldB
@@ -184,12 +178,12 @@ namespace LGP.EventEditor {
                                 }// end GameobjectB
                             } else {
                                 // No Conditional Fields detected in GameObjectA => Clear Conditions and GameObjectB
-                                EditorGUI.LabelField(objectFieldARect, NO_FIELD_DETECTED);
+                                EditorGUI.LabelField(objectFieldARect, EEUtils.labels["NoFields"]);
                                 condition.ClearCondition();
                                 condition.GameObjectB = null;
                             }// End ObjectFieldA
                         } else {
-                            EditorGUI.HelpBox(infoFieldRect, SELECT_SCENEOBJECT, MessageType.Info);
+                            EditorGUI.HelpBox(infoFieldRect, EEUtils.labels["SelectObject"], MessageType.Info);
                         }// end GameObjectA 
 
                     }
@@ -205,15 +199,15 @@ namespace LGP.EventEditor {
                         Rect toggleRect = new Rect(contentRect.x + keyRect.width * 2, contentRect.y + contentRect.height / 2, contentRect.width / 3, contentRect.height / 2);
                         Rect infoField2Rect = new Rect(contentRect.x + contentRect.width / 2, contentRect.y, contentRect.width / 2, contentRect.height / 2);
 
-                        EditorGUI.LabelField(labelRect, "Local Swtich");
-                        if (condition.LocalSwtichKey == string.Empty) {
-                            EditorGUI.HelpBox(infoFieldRect, "Define a Local Switch.", MessageType.Info);
+                        EditorGUI.LabelField(labelRect, EEUtils.labels["LocalSwitch"]);
+                        if (condition.LocalSwitchKey == string.Empty) {
+                            EditorGUI.HelpBox(infoFieldRect, EEUtils.labels["DefineLocalSwitch"], MessageType.Info);
                         } else {
-                            if (!condition.ExistLocalSwtich) EditorGUI.LabelField(labelRect, "Local Swtich (Doesn't exits at the moment)");
-                            EditorGUI.LabelField(label2Rect, " is ");
+                            if (!condition.ExistLocalSwitch) EditorGUI.LabelField(labelRect, EEUtils.labels["LocalSwitchNotExisting"]);
+                            EditorGUI.LabelField(label2Rect, EEUtils.labels["is"]);
                             condition.LocalSwitchValue = EditorGUI.Toggle(toggleRect, condition.LocalSwitchValue);
                         }
-                        condition.LocalSwtichKey = EditorGUI.TextArea(keyRect, condition.LocalSwtichKey);
+                        condition.LocalSwitchKey = EditorGUI.TextArea(keyRect, condition.LocalSwitchKey);
                     }
                     #endregion
 
@@ -262,9 +256,9 @@ namespace LGP.EventEditor {
                 serializedObject.Update();
                 serializedObject.FindProperty("conditionIndex").intValue = page.Conditions.Count - 1;
                 serializedObject.ApplyModifiedProperties();
-                menu.AddItem(new GUIContent("Local Swtich"), false, OnAddLocalSwtich, condition);
-                //menu.AddItem(new GUIContent("Global Swtich"), false, OnAddGlobalSwtich, condition);// TO DO: Yet to be implemented
-                menu.AddItem(new GUIContent("GameObject"), false, OnAddObjectSelected, condition);
+                menu.AddItem(new GUIContent(EEUtils.labels["LocalSwitch"]), false, OnAddLocalSwtich, condition);
+                //menu.AddItem(new GUIContent(EEUtils.labels["GlobalSwitch"]), false, OnAddGlobalSwtich, condition);// TO DO: Yet to be implemented
+                menu.AddItem(new GUIContent(EEUtils.labels["GameObject"]), false, OnAddObjectSelected, condition);
                 menu.ShowAsContext();
             };
 
@@ -290,7 +284,7 @@ namespace LGP.EventEditor {
         }
 
         private void MakeTriggerContent(ETriggerMode mode) {
-            if (mode == ETriggerMode.Collision) {
+            if (mode == ETriggerMode.Custom) {
 
             }
         }

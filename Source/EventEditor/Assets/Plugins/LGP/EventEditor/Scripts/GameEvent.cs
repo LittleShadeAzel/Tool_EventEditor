@@ -17,12 +17,27 @@ namespace LGP.EventEditor {
     /// </summary>
     public class GameEvent : MonoBehaviour {
 
-        #region Delegates
+        #region
         /// <summary>
-        /// This delegate fires when a page becomes active.
+        /// Interacts and starts the function process of the GameEvent.
         /// </summary>
-        /// <param name="page">Returns the new active page</param>
-        public delegate void OnPageActiveDelegate(EEPage page);
+        /// <param name="gameEvent">The GameEvent to interact with.</param>
+        public static void Interact(GameEvent gameEvent) {
+            if (!gameEvent.activePage) return;
+            EEPage page = gameEvent.activePage;
+            if (page.TriggerMode == ETriggerMode.Interaction) {
+                page.InvokeFunctions();
+            }
+        }
+
+        // public static List<GameEvent> loadedGameEvents; // keeps track on all evens in the scene and deletes itself on scene change.
+        // private static AddToMaifest() => Adds the game Event to the loaded Game Events
+        #endregion
+
+        #region Delegates
+        //OnPageBeforeActive;
+        //OnPageBeforeFunction
+        //OnPageAfterFunction
         #endregion
 
         #region Variables
@@ -30,7 +45,6 @@ namespace LGP.EventEditor {
         public int SelectedPageIndex { get => selectedPageIndex; }
         [SerializeField] private EEPage activePage;
         public EEPage ActivePage { get => activePage; }
-        public OnPageActiveDelegate onPageActive;
         public EEPage SelectedEventPage { get => selectedPageIndex >= 0 && selectedPageIndex < pages.Count ? pages[selectedPageIndex] : null; }
         public List<EEPage> pages = new List<EEPage>();
         [SerializeField] private Dictionary<string, bool> localSwtiches = new Dictionary<string, bool>();
@@ -38,12 +52,12 @@ namespace LGP.EventEditor {
         #endregion
 
         #region Unity Methods 
-        private void OnEnable() {
-            onPageActive += StartPageSetup;
+        private void Update() {
+            UpdateActivePage();
         }
 
-        private void Update() {
-            CheckActivePage();
+        private void FixedUpdate() {
+            UpdateCheckCustomTrigger();
         }
 
         private void OnDisable() {
@@ -52,19 +66,9 @@ namespace LGP.EventEditor {
         }
         #endregion
 
-        #region Method
-        /// <summary>
-        /// Rerfreshes Pages of the Event, to keep sorting order right. It also removes empty objects from the list.
-        /// </summary>
-        public void RefreshPages() {
-            for (int i = 0; i < pages.Count; i++) {
-                if (pages[i] == null) {
-                    pages.RemoveAt(i);
-                    continue;
-                }
-            }
-        }
+        #region Methods
 
+        #region Methods: Page Getter/Setter
         /// <summary>
         /// Adds new a Page to the event with initial values.
         /// </summary>
@@ -107,10 +111,25 @@ namespace LGP.EventEditor {
             return null;
         }
 
+        /// <summary>
+        /// Rerfreshes Pages of the Event, to keep sorting order right. It also removes empty objects from the list.
+        /// </summary>
+        public void RefreshPages() {
+            for (int i = 0; i < pages.Count; i++) {
+                if (pages[i] == null) {
+                    pages.RemoveAt(i);
+                    continue;
+                }
+            }
+        }
+        #endregion
+
+        #region Methods: Local/Global Swtiches Getter/Setters
         public void SetLocalSwtich(string value) {
             string[] args = value.Split(char.Parse(","));
             SetLocalSwtich(args[0], bool.Parse(args[1]));
         }
+
         public void SetLocalSwtich(string key, bool flag) {
             if (!localSwtiches.ContainsKey(key)) {
                 AddNewLocalSwtich(key, flag);
@@ -133,34 +152,48 @@ namespace LGP.EventEditor {
             if (localSwtiches.TryGetValue(key, out bool value)) return value;
             return false;
         }
+        #endregion
 
-        private void InvokePageFunctions() {
+        #region Methods: Function Process Flow Control
+        public void ForceFunctionStop() {
             if (!activePage) return;
-            if (activePage.IsRunning) return;
+            if (!activePage.IsReady) return;
+            activePage.ForceStop();
+        }
+
+        public void LoopFunctions(bool value) {
+            if (!activePage) return;
+            if (!activePage.IsReady) return;
+            activePage.IsLooping = value;
+        }
+        #endregion
+
+        private void UpdateActivePage() {
+            EEPage newPage = GetActivePage();
+            if (activePage != newPage) {
+                StopAllCoroutines();
+                activePage = newPage;
+                activePage.Setup();
+                InvokeAutoRun();
+            }
+        }
+
+        private void InvokeAutoRun() {
+            if (!activePage) return;
+            if (!activePage.IsReady) return;
             if (activePage.TriggerMode == ETriggerMode.Autorun) {
                 activePage.InvokeFunctions();
             }
         }
 
-        private void CheckActivePage() {
-            EEPage newPage = GetActivePage();
-            if (activePage != newPage) {
-                StopAllCoroutines();
-                activePage = newPage;
-                if (onPageActive != null) onPageActive.Invoke(activePage);
-                InvokePageFunctions();
-            }
-        }
-
-        private void StartPageSetup(EEPage page) {
-            activePage.Setup();
-        }
-
-        
-
-        public void ForceFunctionStop() {
+        private void UpdateCheckCustomTrigger() {
             if (!activePage) return;
-            if (activePage.IsRunning) activePage.ForceStop();
+            if (!activePage.IsReady) return;
+            if (activePage.TriggerMode == ETriggerMode.Custom) {
+                if (GetComponent<IEECustomTrigger>() != null && GetComponent<IEECustomTrigger>().CheckCustomTrigger()) {
+                    activePage.InvokeFunctions();
+                }
+            }
         }
         #endregion
     }

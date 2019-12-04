@@ -18,7 +18,6 @@ namespace LGP.EventEditor {
         #endregion
 
         #region Variables
-        private const string CREATE_PAGE_INFO = "Create or select a page.";
         private GameEvent gameEvent;
         public SerializedProperty selectedPageIndex;
         private EEPageEditor pageEditor = null;
@@ -57,7 +56,7 @@ namespace LGP.EventEditor {
             if (pageEditor) {
                 pageEditor.DrawInspectorGUI();
             } else {
-                EditorGUILayout.HelpBox(CREATE_PAGE_INFO, MessageType.Info);
+                EditorGUILayout.HelpBox(EEUtils.labels["CreatePage"], MessageType.Info);
             }
         }
 
@@ -74,7 +73,7 @@ namespace LGP.EventEditor {
 
             // Draw Header
             reordList.drawHeaderCallback = (Rect rect) => {
-                EditorGUI.LabelField(rect, "Pages", EditorStyles.boldLabel);
+                EditorGUI.LabelField(rect, EEUtils.labels["Pages"], EditorStyles.boldLabel);
             };
 
             // Draw elements

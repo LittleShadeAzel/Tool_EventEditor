@@ -245,7 +245,6 @@ namespace LGP.EventEditor {
         #endregion
 
         #region Variables
-        // Most of the fields are public for simplicity.
         [SerializeField] private EEPage page;
         public EEPage Page { get => page; set => page = value; }
         [SerializeField] private GameObject gameObjectA, gameObjectB;
@@ -254,14 +253,22 @@ namespace LGP.EventEditor {
         private int indexA, indexB, conditionIndex = -1;
         public int IndexA { get => indexA == -1 ? 0 : indexA; set => indexA = value; }
         public int IndexB { get => indexB == -1 ? 0 : indexB; set => indexB = value; }
-        [SerializeField] private string localSwtichKey;
-        public string LocalSwtichKey { get => localSwtichKey; set => localSwtichKey = value; }
-        [SerializeField] private bool localSwtichValue;
-        public bool LocalSwitchValue { get => localSwtichValue; set => localSwtichValue = value; }
+
+        [SerializeField] private string localSwitchKey;
+        public string LocalSwitchKey { get => localSwitchKey; set => localSwitchKey = value; }
+        [SerializeField] private bool localSwitchValue;
+        public bool LocalSwitchValue { get => localSwitchValue; set => localSwitchValue = value; }
+
+        [SerializeField] private string globalSwitchKey;
+        public string GlobalSwtichKey { get => globalSwitchKey; set => globalSwitchKey = value; }
+        [SerializeField] private bool gloablSwichValue;
+        public bool GlobalSwitchValue { get => gloablSwichValue; set => gloablSwichValue = value; }
+
         [SerializeField] private EConditionObjectType objectType;
         public EConditionObjectType ObjectType { get => objectType; set => objectType = value; }
         [SerializeField] private EConditionType type;
         public EConditionType Type { get => type; set => type = value; }
+
         public int ConditionIndex { get => conditionIndex == -1 ? 0 : conditionIndex; set => conditionIndex = value; }
         private bool[] objectBool = new bool[2];
         public bool[] ObjectBool { get => objectBool; set => objectBool = value; }
@@ -271,10 +278,12 @@ namespace LGP.EventEditor {
         public int[] ObjectInt { get => objectInt; set => objectInt = value; }
         private string[] objectString = new string[2];
         public string[] ObjectString { get => objectString; set => objectString = value; }
+
         public bool IsValid { get => IsObjectValid || IsLocalSwitchValid; }
-        public bool IsLocalSwitchValid { get => LocalSwtichKey != string.Empty; }
+        public bool IsLocalSwitchValid { get => string.IsNullOrEmpty(LocalSwitchKey); }
+        public bool IsGlobalSwtichValid { get => string.IsNullOrEmpty(GlobalSwtichKey); }
         public bool IsObjectValid { get => GetValue(0) != null && GetValue(1) != null && conditionIndex != -1; }
-        public bool ExistLocalSwtich { get => Page.Owner.LocalSwitches.ContainsKey(LocalSwtichKey); }
+        public bool ExistLocalSwitch { get => Page.Owner.LocalSwitches.ContainsKey(LocalSwitchKey); }
         #endregion
 
         #region Methods
@@ -285,8 +294,10 @@ namespace LGP.EventEditor {
             indexA = -1;
             indexB = -1;
             conditionIndex = -1;
-            LocalSwtichKey = string.Empty;
-            LocalSwitchValue = false;
+            localSwitchKey = string.Empty;
+            localSwitchValue = false;
+            globalSwitchKey = string.Empty;
+            gloablSwichValue = false;
             objectBool = new bool[2];
             objectFloat = new float[2];
             objectInt = new int[2];
@@ -326,7 +337,7 @@ namespace LGP.EventEditor {
         /// <returns>True, if both object meet with the condition.</returns>
         public bool CheckCondition() {
             if (Type == EConditionType.LocalSwtich) 
-                if (ExistLocalSwtich) return Page.Owner.GetLocalSwtich(localSwtichKey) == localSwtichValue;
+                if (ExistLocalSwitch) return Page.Owner.GetLocalSwtich(localSwitchKey) == localSwitchValue;
             if (Type == EConditionType.GlobalSwtich) return false;
             if (Type == EConditionType.GameObject) {
                 if (ObjectType == EConditionObjectType.Boolean) return CheckBool(objectBool[0], objectBool[1], conditionIndex);
