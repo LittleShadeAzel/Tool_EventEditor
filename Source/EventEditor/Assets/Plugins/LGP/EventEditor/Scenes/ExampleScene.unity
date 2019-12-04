@@ -222,7 +222,6 @@ GameObject:
   - component: {fileID: 963194228}
   - component: {fileID: 963194227}
   - component: {fileID: 963194226}
-  - component: {fileID: 963194229}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -295,53 +294,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &963194229
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 963194225}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 35110aa5a907fb04b8927c14ccae35bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  selectedPageIndex: -1
-  activePage: {fileID: 0}
-  pages: []
---- !u!114 &1001004434
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e06865e045b19784f84d238373967dd5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  owner: {fileID: 1293064803}
-  displayName: Page1
-  conditionIndex: -1
-  conditions: []
-  unityEvents:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1293064806}
-        m_MethodName: ChangeScene
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  triggerIndex: 1
-  isCoroutine: 0
 --- !u!1 &1293064802
 GameObject:
   m_ObjectHideFlags: 0
@@ -376,7 +328,7 @@ MonoBehaviour:
   selectedPageIndex: 0
   activePage: {fileID: 0}
   pages:
-  - {fileID: 1001004434}
+  - {fileID: 2080276030}
 --- !u!4 &1293064804
 Transform:
   m_ObjectHideFlags: 0
@@ -423,3 +375,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddf154a8635ad6d49bfbb9719ac63561, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2080276030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e06865e045b19784f84d238373967dd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  owner: {fileID: 1293064803}
+  displayName: Page1
+  conditionIndex: -1
+  conditions: []
+  unityEvents:
+    m_PersistentCalls:
+      m_Calls: []
+  triggerIndex: 0
+  isCoroutine: 0

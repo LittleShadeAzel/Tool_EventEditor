@@ -20,7 +20,7 @@ namespace LGP.EventEditor {
         #region Variables
         private GameEvent gameEvent;
         public SerializedProperty selectedPageIndex;
-        private EEPageEditor pageEditor = null;
+        private EEPageEditor pageEditor;
         private ReorderableList reordlistEventPages;
         #endregion
 

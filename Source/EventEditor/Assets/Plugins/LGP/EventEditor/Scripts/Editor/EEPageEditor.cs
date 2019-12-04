@@ -3,17 +3,14 @@ using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Unity;
 using UnityEditor;
 using UnityEditorInternal;
 using LGP.Utils;
-using UnityScript;
 
 namespace LGP.EventEditor {
     [CustomEditor(typeof(EEPage))]
     public class EEPageEditor : Editor {
         #region Variables
-        private bool showFunctions;
         private EEPage page;
         private GameEventEditor eventEditor;
         private ReorderableList conditionList;
@@ -68,6 +65,7 @@ namespace LGP.EventEditor {
             SerializedProperty serialTriggerIndex = serializedObject.FindProperty("triggerIndex");
             serialTriggerIndex.intValue = EditorGUILayout.Popup(page.TriggerIndex, Enum.GetNames(typeof(ETriggerMode)));
             MakeTriggerContent(page.TriggerMode);
+            EditorGUILayout.Space();
 
             // Draw Function
             EditorGUILayout.LabelField(EEUtils.labels["Functions"], EditorStyles.boldLabel);

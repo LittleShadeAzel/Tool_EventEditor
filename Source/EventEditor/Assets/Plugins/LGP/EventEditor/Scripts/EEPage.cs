@@ -8,7 +8,7 @@ using UnityEngine.Events;
 
 namespace LGP.EventEditor {
     /// <summary>
-    /// A page represents one "state" an event can be. Pages have their own conditions, setups, trigger and functions.
+    /// A page represents one "state" a GameEvent can be. Pages have their own conditions, setups, triggers and functions.
     /// </summary>
     [Serializable]
     public class EEPage : ScriptableObject {

@@ -6,7 +6,7 @@ using LGP.EventEditor;
 
 public class TriggerTest : MonoBehaviour {
     private void Update() {
-        //GetComponent<GameEvent>().Interact();
+        GameEvent.Interact(GetComponent<GameEvent>());
     }
 
     public void ChangeScene() {

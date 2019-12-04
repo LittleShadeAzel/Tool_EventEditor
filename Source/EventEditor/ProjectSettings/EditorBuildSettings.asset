@@ -8,7 +8,4 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Plugins/LGP/EventEditor/Scenes/ExampleScene.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
-  - enabled: 1
-    path: Assets/Plugins/LGP/EventEditor/Scenes/New Scene.unity
-    guid: 4e74934dc729502439bd42e2eee1b7f9
   m_configObjects: {}

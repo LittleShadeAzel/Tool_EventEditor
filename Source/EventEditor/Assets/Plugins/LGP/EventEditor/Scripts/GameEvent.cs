@@ -57,18 +57,31 @@ namespace LGP.EventEditor {
             }
         }
         #endregion
-        
+
         /// <summary>
-        /// Interacts and starts the function process of the GameEvent.
+        /// Interacts and starts the function process of the GameEvent found in the currently loaded Game Event list.
         /// </summary>
-        /// <param name="gameEvent">The GameEvent to interact with.</param>
+        /// <param name="gameEvent">The specified GameEvent to interact with.</param>
         public static void Interact(GameEvent gameEvent) {
-            gameEvent.Interact();
+            gameEvents.Find((GameEvent g) => {
+                return g.Equals(gameEvent);
+            });
+        }
+
+        /// <summary>
+        /// Interacts and starts the function process of the GameEvent found in the currently loaded Game Event list.
+        /// </summary>
+        /// <param name="gameEvent">The name of the GameEvent to interact with.</param>
+        public static void Interact(string gameEvent) {
+            gameEvents.Find((GameEvent g) => {
+                return (g.name == gameEvent);
+            });
         }
         #endregion
 
         #region Delegates
-        //OnPageBeforeActive;
+        //TO DO: Delagates
+        //OnPageBeforeActive
         //OnPageBeforeFunction
         //OnPageAfterFunction
         #endregion
@@ -85,28 +98,34 @@ namespace LGP.EventEditor {
         #endregion
 
         #region Unity Methods 
-        private void Awake() {
-            Debug.Log("Subscribe to Scene Manager");
-            RefreshGameEvents();
-        }
-
         private void OnEnable() {
             AddSelfToGameEvents(this);
         }
 
         private void Update() {
-            Debug.Log(gameEvents.Count);
-            UpdateActivePage();
-        }
-
-        private void FixedUpdate() {
-            UpdateCheckCustomTrigger();
+            EEPage newPage = GetActivePage();
+            if (activePage != newPage) {
+                StopAllCoroutines();
+                activePage = newPage;
+                activePage.Setup();
+                if (activePage.TriggerMode == ETriggerMode.Autorun) {
+                    activePage.InvokeFunctions();
+                } else if (activePage.TriggerMode == ETriggerMode.Custom) {
+                    if (GetComponent<IEECustomTrigger>() != null && GetComponent<IEECustomTrigger>().CustomTrigger()) {
+                        activePage.InvokeFunctions();
+                    }
+                }
+            }
         }
 
         private void OnDisable() {
-            StopAllCoroutines();
+            ForceFunctionStop();
             activePage = null;
             RemoveSelfFromGameEvents(this);
+        }
+
+        private void OnDestroy() {
+            ClearLocalSwtiches();
         }
         #endregion
 
@@ -203,47 +222,30 @@ namespace LGP.EventEditor {
         #endregion
 
         #region Methods: Function Process Flow Control
+        /// <summary>
+        /// Force a stop to the function invoking of the GameEvent.
+        /// </summary>
         public void ForceFunctionStop() {
             if (!activePage) return;
             if (!activePage.IsReady) return;
+            StopAllCoroutines();
             activePage.ForceStop();
         }
 
+        /// <summary>
+        /// Enable the function invoke to loop itself after completion. DANGER: CAN UNLEASH AN INFINITE LOOP!!!
+        /// </summary>
+        /// <param name="value"></param>
         public void LoopFunctions(bool value) {
             if (!activePage) return;
             if (!activePage.IsReady) return;
             activePage.IsLooping = value;
         }
         #endregion
-
-        private void UpdateActivePage() {
-            EEPage newPage = GetActivePage();
-            if (activePage != newPage) {
-                StopAllCoroutines();
-                activePage = newPage;
-                activePage.Setup();
-                InvokeAutoRun();
-            }
-        }
-
-        private void InvokeAutoRun() {
-            if (!activePage) return;
-            if (!activePage.IsReady) return;
-            if (activePage.TriggerMode == ETriggerMode.Autorun) {
-                activePage.InvokeFunctions();
-            }
-        }
-
-        private void UpdateCheckCustomTrigger() {
-            if (!activePage) return;
-            if (!activePage.IsReady) return;
-            if (activePage.TriggerMode == ETriggerMode.Custom) {
-                if (GetComponent<IEECustomTrigger>() != null && GetComponent<IEECustomTrigger>().CustomTrigger()) {
-                    activePage.InvokeFunctions();
-                }
-            }
-        }
-
+        
+        /// <summary>
+        /// If the active page trigger is set to "Interaction", this function will invoke the functions.
+        /// </summary>
         public void Interact() {
             if (!activePage) return;
             if (!activePage.IsReady) return;
