@@ -303,11 +303,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1293064804}
-  - component: {fileID: 1293064805}
   - component: {fileID: 1293064803}
-  - component: {fileID: 1293064806}
   m_Layer: 0
-  m_Name: Testobject
+  m_Name: GameEventObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -325,10 +323,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35110aa5a907fb04b8927c14ccae35bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectedPageIndex: 0
+  selectedPageIndex: -1
   activePage: {fileID: 0}
-  pages:
-  - {fileID: 2080276030}
+  pages: []
 --- !u!4 &1293064804
 Transform:
   m_ObjectHideFlags: 0
@@ -343,56 +340,3 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1293064805
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1293064802}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5f86b3a1b49a28438c2a38996605345, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  publicBool: 1
-  conditionalPublicBool: 1
-  publicInt: 1
-  conditionalPublicInt: 1
-  publicFloat: 1
-  conditionalPublicFloat: 1
-  publicString: Test
-  conditionalPublicString: Test
---- !u!114 &1293064806
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1293064802}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ddf154a8635ad6d49bfbb9719ac63561, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &2080276030
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e06865e045b19784f84d238373967dd5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  owner: {fileID: 1293064803}
-  displayName: Page1
-  conditionIndex: -1
-  conditions: []
-  unityEvents:
-    m_PersistentCalls:
-      m_Calls: []
-  triggerIndex: 0
-  isCoroutine: 0

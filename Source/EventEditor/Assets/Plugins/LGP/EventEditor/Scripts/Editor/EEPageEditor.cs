@@ -64,7 +64,6 @@ namespace LGP.EventEditor {
 
             SerializedProperty serialTriggerIndex = serializedObject.FindProperty("triggerIndex");
             serialTriggerIndex.intValue = EditorGUILayout.Popup(page.TriggerIndex, Enum.GetNames(typeof(ETriggerMode)));
-            MakeTriggerContent(page.TriggerMode);
             EditorGUILayout.Space();
 
             // Draw Function
@@ -165,7 +164,6 @@ namespace LGP.EventEditor {
                                         // No Fields Detected
                                         EditorGUI.LabelField(objectFieldBRect, EEUtils.labels["NoFields"]);
                                         condition.IndexB = -1;
-                                        //condition.objectB = null;
                                     }// end ObjectFieldB
                                 } else {
                                     // No defined GameObjectB => Offer user defined values
@@ -211,7 +209,8 @@ namespace LGP.EventEditor {
 
                     #region Type Global Swtich
                     if (condition.Type == EConditionType.GlobalSwtich) {
-
+                        // TO DO
+                        // Implemented same as Local Swtiches.
                     }
                     #endregion
 
@@ -279,12 +278,6 @@ namespace LGP.EventEditor {
             SerializedObject serialCondition = new SerializedObject((Condition)condition);
             serialCondition.FindProperty("type").enumValueIndex = 2;
             serialCondition.ApplyModifiedProperties();
-        }
-
-        private void MakeTriggerContent(ETriggerMode mode) {
-            if (mode == ETriggerMode.Custom) {
-
-            }
         }
         #endregion
     }

@@ -33,7 +33,7 @@ namespace LGP.EventEditor {
         private bool isForcingStop = false;
         public bool IsReady { get => !isRunning; }
         public ETriggerMode TriggerMode {
-            get {                 
+            get {
                 if (Enum.TryParse<ETriggerMode>(Enum.GetNames(typeof(ETriggerMode))[triggerIndex], out ETriggerMode result)) return result;
                 return ETriggerMode.Interaction;
             }

@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEditor;
 
@@ -20,7 +19,7 @@ namespace LGP.EventEditor {
         /// A global List of all loaded Game Events inside active scenes. This List automaticly updates itself when gameEvents are enabled/disabled.
         /// </summary>
         private static List<GameEvent> gameEvents = new List<GameEvent>();
-        
+
         #region Statics: List<GameEvent> Getter/Setter
         private static void AddSelfToGameEvents(GameEvent gameEvent) {
             if (!gameEvents.Contains(gameEvent)) gameEvents.Add(gameEvent);
@@ -242,7 +241,7 @@ namespace LGP.EventEditor {
             activePage.IsLooping = value;
         }
         #endregion
-        
+
         /// <summary>
         /// If the active page trigger is set to "Interaction", this function will invoke the functions.
         /// </summary>

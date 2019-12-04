@@ -280,8 +280,8 @@ namespace LGP.EventEditor {
         public string[] ObjectString { get => objectString; set => objectString = value; }
 
         public bool IsValid { get => IsObjectValid || IsLocalSwitchValid; }
-        public bool IsLocalSwitchValid { get => string.IsNullOrEmpty(LocalSwitchKey); }
-        public bool IsGlobalSwtichValid { get => string.IsNullOrEmpty(GlobalSwtichKey); }
+        public bool IsLocalSwitchValid { get => !string.IsNullOrEmpty(LocalSwitchKey); }
+        public bool IsGlobalSwtichValid { get => !string.IsNullOrEmpty(GlobalSwtichKey); }
         public bool IsObjectValid { get => GetValue(0) != null && GetValue(1) != null && conditionIndex != -1; }
         public bool ExistLocalSwitch { get => Page.Owner.LocalSwitches.ContainsKey(LocalSwitchKey); }
         #endregion
