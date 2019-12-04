@@ -1,37 +1,70 @@
 ﻿using System;
 using System.Collections;
-using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEditor;
-using UnityEditorInternal;
 
 namespace LGP.EventEditor {
 
-
     /// <summary>
-    /// This class enables game objects to have an event editor. 
-    /// An event contains one or many pages which can change the event processing depending on what page is currently active.
+    /// This compnent enables a gameObject to have an event editor. 
+    /// A GameEvent contains pages which can change the gameObject depending on what page is currently active.
     /// </summary>
+    [DisallowMultipleComponent]
     public class GameEvent : MonoBehaviour {
 
-        #region
+        #region Statics
+        /// <summary>
+        /// A global List of all loaded Game Events inside active scenes. This List automaticly updates itself when gameEvents are enabled/disabled.
+        /// </summary>
+        private static List<GameEvent> gameEvents = new List<GameEvent>();
+        
+        #region Statics: List<GameEvent> Getter/Setter
+        private static void AddSelfToGameEvents(GameEvent gameEvent) {
+            if (!gameEvents.Contains(gameEvent)) gameEvents.Add(gameEvent);
+        }
+
+        private static void RemoveSelfFromGameEvents(GameEvent gameEvent) {
+            if (gameEvents.Contains(gameEvent)) gameEvents.Remove(gameEvent);
+        }
+
+        /// <summary>
+        /// Manually clears the List of all GameEvents. This is usually Called when the list has to refresh itself. 
+        /// </summary>
+        public static void ClearGameEvents() {
+            gameEvents.Clear();
+        }
+
+        /// <summary>
+        /// Manually refreshes the List of all GameEvents inside active scenes. Usually the Game Events autoamticly add to or remove themselfs from the list.
+        /// </summary>
+        public static void RefreshGameEvents() {
+            gameEvents.Clear();
+            for (int i = 0; i < SceneManager.sceneCount; i++) {
+                Scene scene = SceneManager.GetSceneAt(i);
+                GameObject[] gameObjects = scene.GetRootGameObjects();
+                for (int j = 0; j < gameObjects.Length; j++) {
+                    GameObject go = gameObjects[j];
+                    if (!go.activeInHierarchy) continue;
+                    if (go.GetComponent<GameEvent>()) {
+                        gameEvents.Add(go.GetComponent<GameEvent>());
+                    } else {
+                        if (go.GetComponentInChildren<GameEvent>()) gameEvents.Add(go.GetComponentInChildren<GameEvent>());
+                    }
+                }
+            }
+        }
+        #endregion
+        
         /// <summary>
         /// Interacts and starts the function process of the GameEvent.
         /// </summary>
         /// <param name="gameEvent">The GameEvent to interact with.</param>
         public static void Interact(GameEvent gameEvent) {
-            if (!gameEvent.activePage) return;
-            EEPage page = gameEvent.activePage;
-            if (page.TriggerMode == ETriggerMode.Interaction) {
-                page.InvokeFunctions();
-            }
+            gameEvent.Interact();
         }
-
-        // public static List<GameEvent> loadedGameEvents; // keeps track on all evens in the scene and deletes itself on scene change.
-        // private static AddToMaifest() => Adds the game Event to the loaded Game Events
         #endregion
 
         #region Delegates
@@ -52,7 +85,17 @@ namespace LGP.EventEditor {
         #endregion
 
         #region Unity Methods 
+        private void Awake() {
+            Debug.Log("Subscribe to Scene Manager");
+            RefreshGameEvents();
+        }
+
+        private void OnEnable() {
+            AddSelfToGameEvents(this);
+        }
+
         private void Update() {
+            Debug.Log(gameEvents.Count);
             UpdateActivePage();
         }
 
@@ -63,6 +106,7 @@ namespace LGP.EventEditor {
         private void OnDisable() {
             StopAllCoroutines();
             activePage = null;
+            RemoveSelfFromGameEvents(this);
         }
         #endregion
 
@@ -152,6 +196,10 @@ namespace LGP.EventEditor {
             if (localSwtiches.TryGetValue(key, out bool value)) return value;
             return false;
         }
+
+        public void ClearLocalSwtiches() {
+            localSwtiches.Clear();
+        }
         #endregion
 
         #region Methods: Function Process Flow Control
@@ -190,9 +238,17 @@ namespace LGP.EventEditor {
             if (!activePage) return;
             if (!activePage.IsReady) return;
             if (activePage.TriggerMode == ETriggerMode.Custom) {
-                if (GetComponent<IEECustomTrigger>() != null && GetComponent<IEECustomTrigger>().CheckCustomTrigger()) {
+                if (GetComponent<IEECustomTrigger>() != null && GetComponent<IEECustomTrigger>().CustomTrigger()) {
                     activePage.InvokeFunctions();
                 }
+            }
+        }
+
+        public void Interact() {
+            if (!activePage) return;
+            if (!activePage.IsReady) return;
+            if (activePage.TriggerMode == ETriggerMode.Interaction) {
+                activePage.InvokeFunctions();
             }
         }
         #endregion

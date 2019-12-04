@@ -25,7 +25,7 @@ namespace LGP.EventEditor {
         public UnityEvent UnityEvents { get => unityEvents; }
         [SerializeField] private int triggerIndex;
         public int TriggerIndex { get => triggerIndex; }
-        private bool isLooping;
+        private bool isLooping = false;
         public bool IsLooping { get => isLooping; set => isLooping = value; }
         [SerializeField] private bool isCoroutine;
         public bool IsCoroutine { get => isCoroutine; }

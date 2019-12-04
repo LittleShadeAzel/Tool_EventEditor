@@ -7,6 +7,6 @@
         /// Is called by the EventEditor when the page trigger is defined as "Custom."
         /// </summary>
         /// <returns>Determiens if the custom trigger is active or not.</returns>
-        bool CheckCustomTrigger();
+        bool CustomTrigger();
     }
 }
