@@ -6,6 +6,7 @@ using UnityEditor;
 using UnityEditorInternal;
 using LGP.Utils;
 
+
 namespace LGP.EventEditor {
     [CustomEditor(typeof(GameEvent))]
     public class GameEventEditor : Editor {
@@ -51,6 +52,14 @@ namespace LGP.EventEditor {
 
         #region Methods
         private void DrawInspector() {
+            // Draw Local Switch
+            if (GUILayout.Button(new GUIContent(EEUtils.labels["LocalSwitches"]))) {
+                LocalSwitchWindow window = LocalSwitchWindow.CreateWindow<LocalSwitchWindow>();
+                window.Setup(gameEvent);
+                // OPen Window;
+            }
+
+            //Draw Pages
             reordlistEventPages.DoLayoutList();
             EEPageEditor pageEditor = GetPageEditor();
             if (pageEditor) {

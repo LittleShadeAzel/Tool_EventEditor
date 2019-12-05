@@ -550,7 +550,7 @@ PlayerSettings:
   webGLThreadsSupport: 0
   webGLWasmStreaming: 0
   scriptingDefineSymbols:
-    1: SUPER_TILEMAP_EDITOR
+    1: SUPER_TILEMAP_EDITOR;RHSD
   platformArchitecture: {}
   scriptingBackend: {}
   il2cppCompilerConfiguration: {}

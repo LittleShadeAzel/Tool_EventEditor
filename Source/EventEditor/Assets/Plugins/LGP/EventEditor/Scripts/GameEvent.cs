@@ -19,6 +19,7 @@ namespace LGP.EventEditor {
         /// A global List of all loaded Game Events inside active scenes. This List automaticly updates itself when gameEvents are enabled/disabled.
         /// </summary>
         private static List<GameEvent> gameEvents = new List<GameEvent>();
+        public static List<GameEvent> GameEvents { get => gameEvents; }
 
         #region Statics: List<GameEvent> Getter/Setter
         private static void AddSelfToGameEvents(GameEvent gameEvent) {
@@ -76,6 +77,19 @@ namespace LGP.EventEditor {
                 return (g.name == gameEvent);
             });
         }
+
+        /// <summary>
+        /// Gets a GameEvent from the list.
+        /// </summary>
+        /// <param name="gameEvent"></param>
+        /// <returns>Name of the gameobject that holds the game object.</returns>
+        public static GameEvent GetGameEvent(string gameEvent) {
+            return gameEvents.Find((GameEvent g) => {
+                return (g.name == gameEvent);
+            });
+        }
+
+
         #endregion
 
         #region Delegates
@@ -92,8 +106,8 @@ namespace LGP.EventEditor {
         public EEPage ActivePage { get => activePage; }
         public EEPage SelectedEventPage { get => selectedPageIndex >= 0 && selectedPageIndex < pages.Count ? pages[selectedPageIndex] : null; }
         public List<EEPage> pages = new List<EEPage>();
-        [SerializeField] private Dictionary<string, bool> localSwtiches = new Dictionary<string, bool>();
-        public Dictionary<string, bool> LocalSwitches { get => localSwtiches; }
+        [SerializeField] private Dictionary<string, bool> localSwitches = new Dictionary<string, bool>();
+        public Dictionary<string, bool> LocalSwitches { get => localSwitches; }
         #endregion
 
         #region Unity Methods 
@@ -193,30 +207,30 @@ namespace LGP.EventEditor {
         }
 
         public void SetLocalSwtich(string key, bool flag) {
-            if (!localSwtiches.ContainsKey(key)) {
+            if (!localSwitches.ContainsKey(key)) {
                 AddNewLocalSwtich(key, flag);
             } else {
-                localSwtiches[key] = flag;
+                localSwitches[key] = flag;
             }
         }
 
         public void AddNewLocalSwitch(string key) {
-            if (!localSwtiches.ContainsKey(key)) {
+            if (!localSwitches.ContainsKey(key)) {
                 AddNewLocalSwtich(key, true);
             }
         }
 
         private void AddNewLocalSwtich(string key, bool flag) {
-            localSwtiches.Add(key, flag);
+            localSwitches.Add(key, flag);
         }
 
         public bool GetLocalSwtich(string key) {
-            if (localSwtiches.TryGetValue(key, out bool value)) return value;
+            if (localSwitches.TryGetValue(key, out bool value)) return value;
             return false;
         }
 
         public void ClearLocalSwtiches() {
-            localSwtiches.Clear();
+            localSwitches.Clear();
         }
         #endregion
 

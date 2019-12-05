@@ -318,6 +318,20 @@ namespace LGP.EventEditor {
         }
 
         /// <summary>
+        /// Wrapper Method to set objects to the condition to check.
+        /// </summary>
+        /// <param name="type">The type of the value.</param>
+        /// <param name="value">The object of the condition.</param>
+        /// <param name="index">Determiens position of the array the value will be stored in. Either 0 or 1.</param>
+        public void SetValue(EConditionObjectType type, object value, int index) {
+            index = Mathf.Clamp(index, 0, 1);
+            if (type == EConditionObjectType.Boolean) objectBool[index] = (bool)value;
+            if (type == EConditionObjectType.Integer) objectInt[index] = (int)value;
+            if (type == EConditionObjectType.Float) objectFloat[index] = (float)value;
+            if (type == EConditionObjectType.String) objectString[index] = (string)value;
+        }
+
+        /// <summary>
         /// Wrapper Method to get the object stored  in the condition.
         /// </summary>
         /// <param name="index">Position from the array stored in the condition. Either 0 or 1.</param>
@@ -328,6 +342,21 @@ namespace LGP.EventEditor {
             if (ObjectType == EConditionObjectType.Integer) return objectInt[index];
             if (ObjectType == EConditionObjectType.Float) return objectFloat[index];
             if (ObjectType == EConditionObjectType.String) return objectString[index];
+            return null;
+        }
+
+        /// <summary>
+        /// Wrapper Method to get the object stored  in the condition.
+        /// </summary>
+        /// <param name="type">Type of the value.</param>
+        /// <param name="index">Position from the array stored in the condition. Either 0 or 1.</param>
+        /// <returns></returns>
+        public object GetValue(EConditionObjectType type, int index) {
+            index = Mathf.Clamp(index, 0, 1);
+            if (type == EConditionObjectType.Boolean) return objectBool[index];
+            if (type == EConditionObjectType.Integer) return objectInt[index];
+            if (type == EConditionObjectType.Float) return objectFloat[index];
+            if (type == EConditionObjectType.String) return objectString[index];
             return null;
         }
 

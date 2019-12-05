@@ -120,6 +120,27 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &539930782
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e06865e045b19784f84d238373967dd5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  owner: {fileID: 1293064803}
+  displayName: Page1
+  conditionIndex: -1
+  conditions: []
+  unityEvents:
+    m_PersistentCalls:
+      m_Calls: []
+  triggerIndex: 0
+  isCoroutine: 0
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -323,9 +344,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35110aa5a907fb04b8927c14ccae35bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectedPageIndex: -1
+  selectedPageIndex: 0
   activePage: {fileID: 0}
-  pages: []
+  pages:
+  - {fileID: 539930782}
 --- !u!4 &1293064804
 Transform:
   m_ObjectHideFlags: 0

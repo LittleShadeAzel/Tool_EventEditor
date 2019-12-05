@@ -36,7 +36,7 @@ namespace LGP.EventEditor {
         #endregion
 
         #region Methods
-        
+
 
         public void DrawInspectorGUI() {
             serializedObject.Update();
@@ -117,18 +117,18 @@ namespace LGP.EventEditor {
                                 if (condition.IndexA != newIndex) {
                                     // If gameObjectA changes reset values
                                     condition.ClearCondition();
+                                    condition.IndexA = newIndex;
+                                    var objectInfoA = Condition.GetConditionalFieldFromIndex(gameObjectA, null, condition.IndexA);
+                                    condition.ObjectType = Condition.GetConditionType(objectInfoA);
+                                    if (objectInfoA is FieldInfo field) {
+                                        condition.SetValue(field.GetValue(gameObjectA.GetComponent(field.DeclaringType)), 0);
+                                    } else if (objectInfoA is PropertyInfo property) {
+                                        condition.SetValue(property.GetValue(gameObjectA.GetComponent(property.DeclaringType)), 0);
+                                    } else if (objectInfoA is MethodInfo method) {
+                                        condition.SetValue(method.Invoke(gameObjectA.GetComponent(method.DeclaringType), null), 0);
+                                    }
+                                    condition.SetValue(condition.GetValue(0), 1);
                                 }
-                                condition.IndexA = newIndex;
-                                var objectInfoA = Condition.GetConditionalFieldFromIndex(gameObjectA, null, condition.IndexA);
-                                condition.ObjectType = Condition.GetConditionType(objectInfoA);
-                                if (objectInfoA is FieldInfo field) {
-                                    condition.SetValue(field.GetValue(gameObjectA.GetComponent(field.DeclaringType)), 0);
-                                } else if (objectInfoA is PropertyInfo property) {
-                                    condition.SetValue(property.GetValue(gameObjectA.GetComponent(property.DeclaringType)), 0);
-                                } else if (objectInfoA is MethodInfo method) {
-                                    condition.SetValue(method.Invoke(gameObjectA.GetComponent(method.DeclaringType), null), 0);
-                                }
-
                                 // Draw Condition Drop Down
                                 if (condition.ObjectType == EConditionObjectType.Boolean) {
                                     condition.ConditionIndex = EditorGUI.Popup(conditionModeRect, condition.ConditionIndex, Enum.GetNames(typeof(EBoolConditionMode)));
@@ -143,7 +143,7 @@ namespace LGP.EventEditor {
                                 GameObject gameObjectB = (GameObject)serialGameObjectB.objectReferenceValue;
                                 if (gameObjectB) {
                                     // From another Object
-                                    Type typeFilter = Condition.GetObjectInfoType(objectInfoA);
+                                    Type typeFilter = Condition.GetObjectInfoType(Condition.GetConditionalFieldFromIndex(gameObjectA, null, condition.IndexA));
                                     string[] optionListB = Condition.GetConditionalFieldOptionList(gameObjectB, typeFilter);
                                     if (optionListB.Length > 0) {
                                         // Fields Detected
