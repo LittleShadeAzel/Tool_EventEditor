@@ -52,11 +52,10 @@ namespace LGP.EventEditor {
 
         #region Methods
         private void DrawInspector() {
-            // Draw Local Switch
+            // Draw Local Switch Button
             if (GUILayout.Button(new GUIContent(EEUtils.labels["LocalSwitches"]))) {
-                LocalSwitchWindow window = LocalSwitchWindow.CreateWindow<LocalSwitchWindow>();
-                window.Setup(gameEvent);
-                // OPen Window;
+                LocalSwitchWindow.Open();
+                LocalSwitchWindow.instance.Setup(gameEvent);
             }
 
             //Draw Pages

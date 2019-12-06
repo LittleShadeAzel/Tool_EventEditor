@@ -6,36 +6,29 @@ using UnityEngine;
 
 namespace LGP.Utils {
 
+    [Serializable]
     public class SerialDictionary<K, V> : ISerializationCallbackReceiver {
-        [SerializeField] private K[] keys;
-        public K[] Keys { get => keys; set => keys = value; }
-        [SerializeField] private V[] values;
-        public V[] Values { get => values; set => values = value; }
+        [SerializeField] private List<K> keys = new List<K>();
+        public List<K> Keys { get => keys; }
+        [SerializeField] private List<V> values = new List<V>();
+        public List<V> Values { get => values; }
+        [SerializeField] private Dictionary<K, V> dictionary = new Dictionary<K, V>();
+        public Dictionary<K,V> Dictionary { get => dictionary; set => dictionary = value; }       
 
-        private Dictionary<K, V> dictionary = new Dictionary<K, V>();
-        public Dictionary<K,V> Dictionary { get => dictionary; set => dictionary = value; }
- 
         public void OnAfterDeserialize() {
-            var c = keys.Length;
+            var c = keys.Count;
             dictionary = new Dictionary<K, V>(c);
-            for (int i = 0; i < c; i++) {
-                dictionary[keys[i]] = values[i];
+            for (var i = 0; i != Math.Min(keys.Count, values.Count); i++) {
+                dictionary.Add(keys[i], values[i]);
             }
-            keys = null;
-            values = null;
         }
 
         public void OnBeforeSerialize() {
-            var c = dictionary.Count;
-            keys = new K[c];
-            values = new V[c];
-            int i = 0;
-            using (var e = dictionary.GetEnumerator())
-            while (e.MoveNext()) {
-                var kvp = e.Current;
-                keys[i] = kvp.Key;
-                values[i] = kvp.Value;
-                i++;
+            keys.Clear();
+            values.Clear();
+            foreach(var kvp in dictionary) {
+                keys.Add(kvp.Key);
+                values.Add(kvp.Value);
             }
         }
     }
@@ -59,7 +52,8 @@ namespace LGP.Utils {
             {"Trigger", "Trigger" },
             {"RunAsCoroutine", "Run as Coroutine" },
             {"Setup", "Setup" },
-            {"Functions", "Functions" }
+            {"Functions", "Functions" },
+            {"SelectGameEvent", "Select a Game Event from the Scene." }
         };
 
 

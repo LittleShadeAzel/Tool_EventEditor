@@ -4,8 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEditor;
+using LGP.Utils;
 
 namespace LGP.EventEditor {
+
+    [Serializable]
+    [AddComponentMenu("LGP/Game Event")]
+    public class LocalSwtichDictionary : SerialDictionary<string, bool> { }
 
     /// <summary>
     /// This compnent enables a gameObject to have an event editor. 
@@ -106,9 +111,10 @@ namespace LGP.EventEditor {
         public EEPage ActivePage { get => activePage; }
         public EEPage SelectedEventPage { get => selectedPageIndex >= 0 && selectedPageIndex < pages.Count ? pages[selectedPageIndex] : null; }
         public List<EEPage> pages = new List<EEPage>();
-        [SerializeField] private Dictionary<string, bool> localSwitches = new Dictionary<string, bool>();
-        public Dictionary<string, bool> LocalSwitches { get => localSwitches; }
+        [SerializeField] private LocalSwtichDictionary localSwitches = new LocalSwtichDictionary();
+        public Dictionary<string, bool> LocalSwitches { get => localSwitches.Dictionary; set => localSwitches.Dictionary = value; }
         #endregion
+
 
         #region Unity Methods 
         private void OnEnable() {
@@ -207,30 +213,30 @@ namespace LGP.EventEditor {
         }
 
         public void SetLocalSwtich(string key, bool flag) {
-            if (!localSwitches.ContainsKey(key)) {
+            if (!LocalSwitches.ContainsKey(key)) {
                 AddNewLocalSwtich(key, flag);
             } else {
-                localSwitches[key] = flag;
+                LocalSwitches[key] = flag;
             }
         }
 
         public void AddNewLocalSwitch(string key) {
-            if (!localSwitches.ContainsKey(key)) {
+            if (!LocalSwitches.ContainsKey(key)) {
                 AddNewLocalSwtich(key, true);
             }
         }
 
         private void AddNewLocalSwtich(string key, bool flag) {
-            localSwitches.Add(key, flag);
+            LocalSwitches.Add(key, flag);
         }
 
         public bool GetLocalSwtich(string key) {
-            if (localSwitches.TryGetValue(key, out bool value)) return value;
+            if (LocalSwitches.TryGetValue(key, out bool value)) return value;
             return false;
         }
 
         public void ClearLocalSwtiches() {
-            localSwitches.Clear();
+            LocalSwitches.Clear();
         }
         #endregion
 
