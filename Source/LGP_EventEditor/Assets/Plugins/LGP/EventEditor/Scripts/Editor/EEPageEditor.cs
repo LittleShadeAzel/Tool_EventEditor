@@ -36,8 +36,6 @@ namespace LGP.EventEditor {
         #endregion
 
         #region Methods
-
-
         public void DrawInspectorGUI() {
             serializedObject.Update();
             DrawInspector();
@@ -47,7 +45,7 @@ namespace LGP.EventEditor {
             }
         }
 
-        public void DrawInspector() {
+        private void DrawInspector() {
             Rect contentRect = EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             EEPage page = (EEPage)target;
 
@@ -91,6 +89,7 @@ namespace LGP.EventEditor {
                     SerializedObject serialCondition = new SerializedObject(condition);
                     float padding = 15;
                     Rect conditionStatusRect = new Rect(rect.x, rect.y, padding, rect.height);
+
                     #region Type of GameObject
                     if (condition.Type == EConditionType.GameObject) {
                         // Setup
@@ -209,8 +208,32 @@ namespace LGP.EventEditor {
 
                     #region Type Global Swtich
                     if (condition.Type == EConditionType.GlobalSwtich) {
-                        // TO DO
-                        // Implemented same as Local Swtiches.
+                        Rect contentRect = new Rect(rect.x + padding, rect.y, rect.width - padding, rect.height);
+                        Rect labelRect = new Rect(contentRect.x, contentRect.y, contentRect.width, contentRect.height / 2);
+
+                        Rect objectRect = new Rect(contentRect.x, contentRect.y + contentRect.height / 2, contentRect.width / 3, contentRect.height / 2);
+                        Rect keyRect = new Rect(contentRect.x + objectRect.width, contentRect.y + contentRect.height / 2, contentRect.width / 4, contentRect.height / 2);
+                        Rect infoFieldRect = new Rect(contentRect.x + contentRect.width / 2, contentRect.y, contentRect.width / 2, contentRect.height);
+                        Rect label2Rect = new Rect(contentRect.x + objectRect.width + keyRect.width, contentRect.y + contentRect.height / 2, contentRect.width / 4, contentRect.height / 2);
+                        Rect toggleRect = new Rect(contentRect.x + objectRect.width + keyRect.width + label2Rect.width, contentRect.y + contentRect.height / 2, contentRect.width / 4, contentRect.height / 2);
+                        Rect infoField2Rect = new Rect(contentRect.x + contentRect.width / 2, contentRect.y, contentRect.width / 2, contentRect.height / 2);
+
+                        EditorGUI.LabelField(labelRect, EEUtils.labels["GlobalSwitch"]);
+
+                        EditorGUI.ObjectField(objectRect, serialCondition.FindProperty("globalSwitchObject"), new GUIContent(""));
+                        if (condition.GlobalSwitchObject) {
+                            if (condition.GlobalSwtichKey == string.Empty) {
+                            } else {
+                                if (!condition.ExistGlobalSwitch) EditorGUI.LabelField(labelRect, EEUtils.labels["GlobalSwitchNotExisting"]);
+                                EditorGUI.LabelField(label2Rect, EEUtils.labels["is"]);
+                                condition.GlobalSwitchValue = EditorGUI.Toggle(toggleRect, condition.GlobalSwitchValue);
+                            }
+                            condition.GlobalSwtichKey = EditorGUI.TextArea(keyRect, condition.GlobalSwtichKey);
+
+                        } else {
+                            EditorGUI.HelpBox(infoFieldRect, EEUtils.labels["DefineGlobalSwitch"], MessageType.Info);
+                        }
+
                     }
                     #endregion
 
@@ -254,7 +277,8 @@ namespace LGP.EventEditor {
                 serializedObject.FindProperty("conditionIndex").intValue = page.Conditions.Count - 1;
                 serializedObject.ApplyModifiedProperties();
                 menu.AddItem(new GUIContent(EEUtils.labels["LocalSwitch"]), false, OnAddLocalSwtich, condition);
-                //menu.AddItem(new GUIContent(EEUtils.labels["GlobalSwitch"]), false, OnAddGlobalSwtich, condition);// TO DO: Yet to be implemented
+
+                menu.AddItem(new GUIContent(EEUtils.labels["GlobalSwitch"]), false, OnAddGlobalSwtich, condition);// TO DO: Yet to be implemented
                 menu.AddItem(new GUIContent(EEUtils.labels["GameObject"]), false, OnAddObjectSelected, condition);
                 menu.ShowAsContext();
             };

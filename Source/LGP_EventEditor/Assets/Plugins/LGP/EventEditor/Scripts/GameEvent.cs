@@ -8,15 +8,21 @@ using LGP.Utils;
 
 namespace LGP.EventEditor {
 
+
     [Serializable]
-    [AddComponentMenu("LGP/Game Event")]
-    public class LocalSwtichDictionary : SerialDictionary<string, bool> { }
+    public class InitialLocalSwitchDictionary : SerializedGenericDictionary<string, bool> { }
+
+    [Serializable]
+    public class LocalSwtichDictionary : SerializedGenericDictionary<string, bool> { }
+
+
 
     /// <summary>
     /// This compnent enables a gameObject to have an event editor. 
     /// A GameEvent contains pages which can change the gameObject depending on what page is currently active.
     /// </summary>
     [DisallowMultipleComponent]
+    [AddComponentMenu("LGP/Game Event")]
     public class GameEvent : MonoBehaviour {
 
         #region Statics
@@ -97,13 +103,6 @@ namespace LGP.EventEditor {
 
         #endregion
 
-        #region Delegates
-        //TO DO: Delagates
-        //OnPageBeforeActive
-        //OnPageBeforeFunction
-        //OnPageAfterFunction
-        #endregion
-
         #region Variables
         [SerializeField] private int selectedPageIndex = -1;
         public int SelectedPageIndex { get => selectedPageIndex; }
@@ -113,11 +112,14 @@ namespace LGP.EventEditor {
         public List<EEPage> pages = new List<EEPage>();
         [SerializeField] private LocalSwtichDictionary localSwitches = new LocalSwtichDictionary();
         public Dictionary<string, bool> LocalSwitches { get => localSwitches.Dictionary; set => localSwitches.Dictionary = value; }
+        [SerializeField] private InitialLocalSwitchDictionary initialLocalSwitches = new InitialLocalSwitchDictionary();
+        public Dictionary<string, bool> InitialLocalSwitches { get => initialLocalSwitches.Dictionary; }
+        
         #endregion
-
 
         #region Unity Methods 
         private void OnEnable() {
+            ResetLocalSwitches();
             AddSelfToGameEvents(this);
         }
 
@@ -126,6 +128,7 @@ namespace LGP.EventEditor {
             if (activePage != newPage) {
                 StopAllCoroutines();
                 activePage = newPage;
+                if (activePage == null) return;
                 activePage.Setup();
                 if (activePage.TriggerMode == ETriggerMode.Autorun) {
                     activePage.InvokeFunctions();
@@ -141,10 +144,6 @@ namespace LGP.EventEditor {
             ForceFunctionStop();
             activePage = null;
             RemoveSelfFromGameEvents(this);
-        }
-
-        private void OnDestroy() {
-            ClearLocalSwtiches();
         }
         #endregion
 
@@ -206,7 +205,7 @@ namespace LGP.EventEditor {
         }
         #endregion
 
-        #region Methods: Local/Global Swtiches Getter/Setters
+        #region Methods: Local Getter/Setters
         public void SetLocalSwtich(string value) {
             string[] args = value.Split(char.Parse(","));
             SetLocalSwtich(args[0], bool.Parse(args[1]));
@@ -226,17 +225,21 @@ namespace LGP.EventEditor {
             }
         }
 
-        private void AddNewLocalSwtich(string key, bool flag) {
-            LocalSwitches.Add(key, flag);
+        public void AddNewLocalSwtich(string key, bool flag) {
+            if (!LocalSwitches.ContainsKey(key)) LocalSwitches.Add(key, flag);
         }
 
         public bool GetLocalSwtich(string key) {
             if (LocalSwitches.TryGetValue(key, out bool value)) return value;
+            Debug.Log("Local Switch with Key [" + key + "] doesnt exist.");
             return false;
         }
 
-        public void ClearLocalSwtiches() {
-            LocalSwitches.Clear();
+        /// <summary>
+        /// Resets the Local Switch catalog of this GameEvent to the inital values setup inside the Event Editor.
+        /// </summary>
+        public void ResetLocalSwitches() {
+            LocalSwitches = new Dictionary<string, bool>(InitialLocalSwitches);
         }
         #endregion
 

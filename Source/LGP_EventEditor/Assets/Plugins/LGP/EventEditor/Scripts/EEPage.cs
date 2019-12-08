@@ -7,28 +7,43 @@ using UnityEditor;
 using UnityEngine.Events;
 
 namespace LGP.EventEditor {
+
+
     /// <summary>
     /// A page represents one "state" a GameEvent can be. Pages have their own conditions, setups, triggers and functions.
     /// </summary>
     [Serializable]
     public class EEPage : ScriptableObject {
+
+        #region Delegates
+        /// <summary>
+        /// /// Delegate for subscribing functions after a page became active to properly setup the Page.
+        /// </summary>
+        /// <param name="page">As parameter the delegate offers the page in wich "Setup()" was called.</param>
+        public delegate void PageActiveDelegate(EEPage page);
+        //TO DO: Delagates
+        //OnPageBeforeActive
+        //OnPageBeforeFunction
+        //OnPageAfterFunction
+        #endregion
+
         #region Variables
         [SerializeField] private GameEvent owner;
         public GameEvent Owner { get => owner; set => owner = value; }
         [SerializeField] private string displayName;
-        public string DisplayName { get => displayName; }
+        public string DisplayName { get => displayName; set => displayName = value; }
         [SerializeField] private int conditionIndex = -1;
         public int ConditionIndex { get => conditionIndex; }
         [SerializeField] private List<Condition> conditions = new List<Condition>();
-        public List<Condition> Conditions { get => conditions; }
+        public List<Condition> Conditions { get => conditions; set => conditions = value; }
         [SerializeField] private UnityEvent unityEvents = new UnityEvent();
-        public UnityEvent UnityEvents { get => unityEvents; }
+        public UnityEvent UnityEvents { get => unityEvents; set => unityEvents = value; }
         [SerializeField] private int triggerIndex;
-        public int TriggerIndex { get => triggerIndex; }
+        public int TriggerIndex { get => triggerIndex; set => triggerIndex = value; }
         private bool isLooping = false;
         public bool IsLooping { get => isLooping; set => isLooping = value; }
-        [SerializeField] private bool isCoroutine;
-        public bool IsCoroutine { get => isCoroutine; }
+        [SerializeField] private bool isCoroutine = false;
+        public bool IsCoroutine { get => isCoroutine; set => isCoroutine = true; }
         private bool isRunning;
         private bool isForcingStop = false;
         public bool IsReady { get => !isRunning; }
@@ -38,6 +53,8 @@ namespace LGP.EventEditor {
                 return ETriggerMode.Interaction;
             }
         }
+        private PageActiveDelegate onPageActive = delegate { };
+        public PageActiveDelegate OnPageActive { get => onPageActive; set => onPageActive = value; }
         #endregion
 
         #region Methods
@@ -81,7 +98,7 @@ namespace LGP.EventEditor {
 
         #region Methods: Setup Handlers
         public void Setup() {
-            // Handle Setup
+            if (onPageActive != null) onPageActive.Invoke(this);
         }
         #endregion
 

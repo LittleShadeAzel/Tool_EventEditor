@@ -6,14 +6,17 @@ using UnityEngine;
 
 namespace LGP.Utils {
 
+    /// <summary>
+    /// Custom Dictionary that can be serialized. It has to be inherted to avoid the generics. Because Generics cannot be serialized.
+    /// </summary>
+    /// <typeparam name="K"></typeparam>
+    /// <typeparam name="V"></typeparam>
     [Serializable]
-    public class SerialDictionary<K, V> : ISerializationCallbackReceiver {
+    public abstract class SerializedGenericDictionary<K, V> : ISerializationCallbackReceiver {
         [SerializeField] private List<K> keys = new List<K>();
-        public List<K> Keys { get => keys; }
         [SerializeField] private List<V> values = new List<V>();
-        public List<V> Values { get => values; }
-        [SerializeField] private Dictionary<K, V> dictionary = new Dictionary<K, V>();
-        public Dictionary<K,V> Dictionary { get => dictionary; set => dictionary = value; }       
+        private Dictionary<K, V> dictionary = new Dictionary<K, V>();
+        public Dictionary<K, V> Dictionary { get => dictionary; set => dictionary = value; }
 
         public void OnAfterDeserialize() {
             var c = keys.Count;
@@ -26,13 +29,12 @@ namespace LGP.Utils {
         public void OnBeforeSerialize() {
             keys.Clear();
             values.Clear();
-            foreach(var kvp in dictionary) {
+            foreach (var kvp in dictionary) {
                 keys.Add(kvp.Key);
                 values.Add(kvp.Value);
             }
         }
     }
-
 
     public static class EEUtils {
 
@@ -45,15 +47,24 @@ namespace LGP.Utils {
             {"LocalSwitch", "Local Switch" },
             {"LocalSwitches", "Local Switches" },
             {"DefineLocalSwitch", "Define a Local Switch."},
+            {"DefineGlobalSwitch", "Define a Global Switch."},
             {"LocalSwitchNotExisting", "Local Switch (Doesn't exist at the moment)" },
+            {"GlobalSwitchNotExisting", "Global Switch (Doesn't exist at the moment)" },
             {"GlobalSwitch", "Global Switch" },
+            {"GlobalSwitches", "Global Switches" },
             {"GameObject", "Game Object" },
             {"is", "is" },
             {"Trigger", "Trigger" },
             {"RunAsCoroutine", "Run as Coroutine" },
             {"Setup", "Setup" },
             {"Functions", "Functions" },
-            {"SelectGameEvent", "Select a Game Event from the Scene." }
+            {"SelectGameEvent", "Select a Game Event from the Scene." },
+            {"SelectGlobalSwitch", "Select a Global Switch object from the Asset database." },
+            {"GameEvent", "Game Event" },
+            {"Key", "Key" },
+            {"Value", "Value" },
+            {"RuntimeValue", "Runtime Value" },
+            {"InitialValue", "Initial Value" }
         };
 
 

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657826, g: 0.49641263, b: 0.57481676, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -120,28 +120,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!114 &298858071
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e06865e045b19784f84d238373967dd5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  owner: {fileID: 1293064803}
-  displayName: Page1
-  conditionIndex: 0
-  conditions:
-  - {fileID: 1847944259}
-  unityEvents:
-    m_PersistentCalls:
-      m_Calls: []
-  triggerIndex: 0
-  isCoroutine: 0
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -215,7 +193,8 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_BoundingSphereOverride: {x: 2.7229866e+20, y: 1.8729223e+31, z: 6.3176475e+28,
+    w: 1.01524616e+12}
   m_UseBoundingSphereOverride: 0
   m_ShadowRadius: 0
   m_ShadowAngle: 0
@@ -316,55 +295,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1146777501
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1146777503}
-  - component: {fileID: 1146777502}
-  m_Layer: 0
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1146777502
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1146777501}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 35110aa5a907fb04b8927c14ccae35bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  selectedPageIndex: -1
-  activePage: {fileID: 0}
-  pages: []
-  localSwitches:
-    keys: []
-    values: 
---- !u!4 &1146777503
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1146777501}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1293064802
 GameObject:
   m_ObjectHideFlags: 0
@@ -374,6 +304,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1293064804}
+  - component: {fileID: 1293064805}
+  - component: {fileID: 1293064806}
   - component: {fileID: 1293064803}
   m_Layer: 0
   m_Name: GameEventObject
@@ -397,11 +329,17 @@ MonoBehaviour:
   selectedPageIndex: 0
   activePage: {fileID: 0}
   pages:
-  - {fileID: 298858071}
+  - {fileID: 2125155200}
   localSwitches:
     keys:
     - A
-    values: 01
+    - B
+    values: 0100
+  initialLocalSwitches:
+    keys:
+    - A
+    - B
+    values: 0100
 --- !u!4 &1293064804
 Transform:
   m_ObjectHideFlags: 0
@@ -416,7 +354,39 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1847944259
+--- !u!114 &1293064805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1293064802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5f86b3a1b49a28438c2a38996605345, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  publicBool: 1
+  conditionalPublicBool: 1
+  publicInt: 1
+  conditionalPublicInt: 1
+  publicFloat: 1
+  conditionalPublicFloat: 1
+  publicString: Test
+  conditionalPublicString: Test
+--- !u!114 &1293064806
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1293064802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ddf154a8635ad6d49bfbb9719ac63561, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &2125155200
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -425,15 +395,26 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb47dbc39e14a6940b60117a18e1f57c, type: 3}
+  m_Script: {fileID: 11500000, guid: e06865e045b19784f84d238373967dd5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  page: {fileID: 298858071}
-  gameObjectA: {fileID: 0}
-  gameObjectB: {fileID: 0}
-  localSwitchKey: A
-  localSwitchValue: 0
-  globalSwitchKey: 
-  gloablSwichValue: 0
-  objectType: 0
-  type: 0
+  owner: {fileID: 1293064803}
+  displayName: Page1
+  conditionIndex: -1
+  conditions: []
+  unityEvents:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1293064803}
+        m_MethodName: SetLocalSwtich
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: A,false
+          m_BoolArgument: 0
+        m_CallState: 2
+  triggerIndex: 1
+  isCoroutine: 0

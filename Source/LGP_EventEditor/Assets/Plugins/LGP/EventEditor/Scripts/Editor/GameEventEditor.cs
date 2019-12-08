@@ -21,7 +21,6 @@ namespace LGP.EventEditor {
         #region Variables
         private GameEvent gameEvent;
         public SerializedProperty selectedPageIndex;
-        private EEPageEditor pageEditor;
         private ReorderableList reordlistEventPages;
         #endregion
 
@@ -32,10 +31,6 @@ namespace LGP.EventEditor {
             serializedObject.Update();
             selectedPageIndex = serializedObject.FindProperty("selectedPageIndex");
             reordlistEventPages = MakeReordList();
-        }
-
-        private void OnDisable() {
-            if (pageEditor) DestroyImmediate(pageEditor);
         }
 
         public override void OnInspectorGUI() {
@@ -51,8 +46,12 @@ namespace LGP.EventEditor {
         #endregion
 
         #region Methods
+
         private void DrawInspector() {
+           
             // Draw Local Switch Button
+
+
             if (GUILayout.Button(new GUIContent(EEUtils.labels["LocalSwitches"]))) {
                 LocalSwitchWindow.Open();
                 LocalSwitchWindow.instance.Setup(gameEvent);

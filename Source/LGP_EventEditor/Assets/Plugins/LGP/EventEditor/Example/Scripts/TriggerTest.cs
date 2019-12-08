@@ -9,7 +9,7 @@ public class TriggerTest : MonoBehaviour {
         GameEvent.Interact(GetComponent<GameEvent>());
     }
 
-    public void ChangeScene() {
-        SceneManager.LoadScene(1, LoadSceneMode.Additive);
+    public void DebugTest() {
+        Debug.Log("Interact Test");
     }
 }

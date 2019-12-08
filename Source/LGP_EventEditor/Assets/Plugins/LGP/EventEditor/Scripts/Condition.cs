@@ -259,6 +259,9 @@ namespace LGP.EventEditor {
         [SerializeField] private bool localSwitchValue;
         public bool LocalSwitchValue { get => localSwitchValue; set => localSwitchValue = value; }
 
+        [SerializeField] private GlobalSwitch globalSwitchObject;
+        public GlobalSwitch GlobalSwitchObject { get => globalSwitchObject; set => globalSwitchObject = value; }
+
         [SerializeField] private string globalSwitchKey;
         public string GlobalSwtichKey { get => globalSwitchKey; set => globalSwitchKey = value; }
         [SerializeField] private bool gloablSwichValue;
@@ -279,11 +282,12 @@ namespace LGP.EventEditor {
         private string[] objectString = new string[2];
         public string[] ObjectString { get => objectString; set => objectString = value; }
 
-        public bool IsValid { get => IsObjectValid || IsLocalSwitchValid; }
+        public bool IsValid { get => IsObjectValid || IsLocalSwitchValid || IsGlobalSwtichValid; }
         public bool IsLocalSwitchValid { get => !string.IsNullOrEmpty(LocalSwitchKey); }
         public bool IsGlobalSwtichValid { get => !string.IsNullOrEmpty(GlobalSwtichKey); }
         public bool IsObjectValid { get => GetValue(0) != null && GetValue(1) != null && conditionIndex != -1; }
         public bool ExistLocalSwitch { get => Page.Owner.LocalSwitches.ContainsKey(LocalSwitchKey); }
+        public bool ExistGlobalSwitch { get => globalSwitchObject != null && globalSwitchObject.Manifest.ContainsKey(globalSwitchKey); }
         #endregion
 
         #region Methods
@@ -367,7 +371,8 @@ namespace LGP.EventEditor {
         public bool CheckCondition() {
             if (Type == EConditionType.LocalSwtich) 
                 if (ExistLocalSwitch) return Page.Owner.GetLocalSwtich(localSwitchKey) == localSwitchValue;
-            if (Type == EConditionType.GlobalSwtich) return false;
+            if (Type == EConditionType.GlobalSwtich)
+                if (ExistGlobalSwitch) return globalSwitchObject.GetGlobalSwtich(globalSwitchKey) == gloablSwichValue;
             if (Type == EConditionType.GameObject) {
                 if (ObjectType == EConditionObjectType.Boolean) return CheckBool(objectBool[0], objectBool[1], conditionIndex);
                 if (ObjectType == EConditionObjectType.Integer) return CheckInt(objectInt[0], objectInt[1], conditionIndex);
